@@ -8,5 +8,6 @@ namespace MedicalAppointmentApp.Domain.Repositories
 {
     internal interface IBaseRepository
     {
+        //repositorio
     }
 }
