@@ -13,7 +13,7 @@ namespace MedicalAppointmentApp.Domain.Entities
 
         public string nombre { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
     }
 }
