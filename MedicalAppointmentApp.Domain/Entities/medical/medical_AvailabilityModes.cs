@@ -1,17 +1,13 @@
-﻿using MedicalAppointmentApp.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using MedicalAppointmentApp.Domain.Base;
 
-namespace MedicalAppointmentApp.Domain.Entities.medical
+namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
-    internal class medical_AvailabilityModes : BaseEntity
+    //Orlando Martinez 2020-10382
+    public class Medical_AvailabilityModes: BaseEntity
     {
         public short SAvailability { get; set; }
 
         public string AvailabilityMobe { get; set; }
-
     }
 }
