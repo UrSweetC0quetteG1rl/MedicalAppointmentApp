@@ -2,7 +2,8 @@
 
 namespace MedicalAppointmentApp.Domain.Entities.Appoinments
 {
-    internal class Appointments_DoctorAvailability
+    //Orlando Martinez 2020-10382
+    public class Appointments_DoctorAvailability
     {
         public int Availability { get; set; }
 

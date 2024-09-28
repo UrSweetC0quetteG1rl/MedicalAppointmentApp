@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
+//Naomi Meran 2023-1514
 namespace MedicalAppointmentApp.Domain.Entities.Users
 {
     internal sealed class Users_Doctors : Users_Users

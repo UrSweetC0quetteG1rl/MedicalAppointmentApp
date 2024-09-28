@@ -1,4 +1,6 @@
-﻿namespace MedicalAppointmentApp.Domain.Entities.System
+﻿//Naomi Meran 2023-1514
+
+namespace MedicalAppointmentApp.Domain.Entities.System
 {
     public class System_Notifications
     {

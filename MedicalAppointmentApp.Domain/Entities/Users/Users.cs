@@ -1,5 +1,6 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
 
+//Naomi Meran 2023-1514
 namespace MedicalAppointmentApp.Domain.Entities.Users
 {
     public class Users_Users : BaseEntity
