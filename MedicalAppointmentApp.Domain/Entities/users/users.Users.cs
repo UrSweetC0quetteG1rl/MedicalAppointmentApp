@@ -1,10 +1,10 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
 
-namespace MedicalAppointmentApp.Domain.Entities.Users
+namespace MedicalAppointmentApp.Domain.Entities.users
 {
     public class Users_Users : BaseEntity
     {
-        public int UserId {  get; set; }
+        public int UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

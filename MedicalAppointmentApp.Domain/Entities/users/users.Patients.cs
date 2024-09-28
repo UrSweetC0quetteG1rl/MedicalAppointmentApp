@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace MedicalAppointmentApp.Domain.Entities.Users
+namespace MedicalAppointmentApp.Domain.Entities.users
 {
     public sealed class Users_Patients : BaseEntity
     {

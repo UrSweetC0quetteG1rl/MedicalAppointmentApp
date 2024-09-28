@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointmentApp.Domain.Entities
+namespace MedicalAppointmentApp.Domain.Entities.medical
 {
     internal class medical_Specialties : BaseEntity
     {
         public short SpecialtyID { get; set; }
 
-        public string SpecialtyName { get; set;}
+        public string SpecialtyName { get; set; }
 
     }
 }

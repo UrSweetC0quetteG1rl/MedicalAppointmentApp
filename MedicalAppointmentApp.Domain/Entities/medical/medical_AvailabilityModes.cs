@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointmentApp.Domain.Entities
+namespace MedicalAppointmentApp.Domain.Entities.medical
 {
     internal class medical_AvailabilityModes : BaseEntity
     {
-        public short SAvailability {  get; set; }
+        public short SAvailability { get; set; }
 
         public string AvailabilityMobe { get; set; }
 
