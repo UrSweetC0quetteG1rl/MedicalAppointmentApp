@@ -1,6 +1,7 @@
 ﻿
 namespace MedicalAppointmentApp.Domain.Base
 {
+    //Naomi Meran #2023-1514
     public abstract class BaseEntity
     {
         public DateTime CreatedAt { get; set; }
