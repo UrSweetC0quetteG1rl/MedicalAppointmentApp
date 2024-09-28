@@ -1,6 +1,4 @@
-﻿
-
-namespace MedicalAppointmentApp.Domain.Entities.system
+﻿namespace MedicalAppointmentApp.Domain.Entities.System
 {
     public class System_Notifications
     {
