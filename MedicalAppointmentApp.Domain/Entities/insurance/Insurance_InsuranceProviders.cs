@@ -3,7 +3,8 @@
 
 namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
-    internal class Insurance_InsuranceProviders : BaseEntity
+    //Orlando Martinez 2020-10382
+    public class Insurance_InsuranceProviders : BaseEntity
     {
      
             public string Name { get; set; }

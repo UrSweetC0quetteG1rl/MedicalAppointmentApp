@@ -2,7 +2,8 @@
 
 namespace MedicalAppointmentApp.Domain.Entities.insurance
 {
-    internal class Insurance_NetworkType : BaseEntity
+    //Orlando Martinez 2020-10382
+    public class Insurance_NetworkType : BaseEntity
     {
         public int NetworkTypeID { get; set; }
 
