@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointmentApp.Domain.Entities
+namespace MedicalAppointmentApp.Domain.Entities.insurance
 {
     internal class insurance_NetworkType : BaseEntity
     {

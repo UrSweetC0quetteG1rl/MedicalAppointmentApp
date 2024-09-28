@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointmentApp.Domain.Entities
+namespace MedicalAppointmentApp.Domain.Entities.medical
 {
     internal class medica_MedicalRecords : BaseEntity
     {

@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointmentApp.Domain.Entities
+namespace MedicalAppointmentApp.Domain.Entities.Appoinments
 {
     internal class appointments_DoctorAvailability
     {
-        public int Availability {  get; set; }
+        public int Availability { get; set; }
 
         public int DoctorID { get; set; }
 
         public DateTime AvaileDate { get; set; }
 
-        public DateTime StartTime  { get; set; }
+        public DateTime StartTime { get; set; }
 
         public DateTime EndTime { get; set; }
 
