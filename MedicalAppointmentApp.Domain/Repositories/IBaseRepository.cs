@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 
 namespace MedicalAppointmentApp.Domain.Repositories
 {
-    //Naomi Meran #2023-1514
     public interface IBaseRepository<TEntity> where TEntity : class
     {
         //repositorio

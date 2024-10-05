@@ -1,7 +1,6 @@
 ﻿
 namespace MedicalAppointmentApp.Domain.Result
 {
-    //Naomi Meran #2023-1514
     public class OperationResult
     {
         public string Message { get; set; }

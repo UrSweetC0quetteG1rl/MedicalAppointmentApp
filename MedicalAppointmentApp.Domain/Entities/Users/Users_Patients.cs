@@ -1,4 +1,8 @@
-﻿//Naomi Meran 2023-1514
+﻿using MedicalAppointmentApp.Domain.Base;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace MedicalAppointmentApp.Domain.Entities.Users
 {

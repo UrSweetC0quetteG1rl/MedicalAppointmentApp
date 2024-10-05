@@ -2,8 +2,7 @@
 
 namespace MedicalAppointmentApp.Domain.Entities.medical
 {
-    //Orlando Martinez 2020-10382
-    public class Medical_MedicalRecords : BaseEntity
+    internal class Medical_MedicalRecords : BaseEntity
     {
         public int RecordID { get; set; }
 
