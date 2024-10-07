@@ -1,15 +1,15 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
+    [Table("NetworkType", Schema = "dbo")]
     //Orlando Martinez 2020-10382
-    public class Insurance_NetworkType: BaseEntity
+    public class NetworkType: BaseEntity
     {
+        [Key]
         public int NetworkTypeID { get; set; }
         public string nombre { get; set; }
         public string? Description { get; set; }

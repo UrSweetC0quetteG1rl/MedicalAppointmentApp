@@ -1,9 +1,12 @@
-﻿//Naomi Meran 2023-1514
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.System
 {
-    public class System_Notifications
+    [Table("Notifications", Schema = "dbo")]
+    public class Notification
     {
+        [Key]
         public int NotificationID { get; set; }
         public int UserID { get; set; }
         public string Message { get; set; }

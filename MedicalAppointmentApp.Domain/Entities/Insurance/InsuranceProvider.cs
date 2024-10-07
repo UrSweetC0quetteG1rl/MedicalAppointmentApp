@@ -1,11 +1,15 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
+    [Table("InsuranceProviders", Schema = "dbo")]
     //Orlando Martinez 2020-10382
-    public class Insurance_InsuranceProviders
+    public class InsuranceProvider
     {
-
+        [Key]
             public string Nombre { get; set; }
 
             public string ContactNumber { get; set; }

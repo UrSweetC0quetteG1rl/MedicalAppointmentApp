@@ -1,10 +1,13 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-//Naomi Meran 2023-1514
 namespace MedicalAppointmentApp.Domain.Entities.System
 {
-    public class System_Roles : BaseEntity
+    [Table("Roles", Schema = "dbo")]
+    public class Role : BaseEntity
     {
+        [Key]
         public int RoleID { get; set; }
         public string RoleName { get; set; }
         public string RoleDescription { get; set; }

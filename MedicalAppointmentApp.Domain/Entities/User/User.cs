@@ -1,10 +1,13 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-//Naomi Meran 2023-1514
-namespace MedicalAppointmentApp.Domain.Entities.Users
+namespace MedicalAppointmentApp.Domain.Entities.User
 {
-    public class Users_Users : BaseEntity
+    [Table("Users", Schema = "dbo")]
+    public class User : BaseEntity
     {
+        [Key]
         public int UserId {  get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

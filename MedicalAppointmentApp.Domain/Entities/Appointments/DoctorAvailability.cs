@@ -1,10 +1,15 @@
 ﻿
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MedicalAppointmentApp.Domain.Entities.Appoinments
 {
     //Orlando Martinez 2020-10382 
-    public class Appointments_DoctorAvailability
+    [Table("DoctorAvailability", Schema = "dbo")]
+    public class DoctorAvailability
     {
+        [Key]
         public int Availability { get; set; }
 
         public int DoctorID { get; set; }

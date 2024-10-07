@@ -1,10 +1,13 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MedicalAppointmentApp.Domain.Entities.medical
+namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
-    //Orlando Martinez 2020-10382
-    public class Medical_MedicalRecords : BaseEntity
+    [Table("MedicalRecords", Schema = "dbo")]
+    public class MedicalRecord : BaseEntity
     {
+        [Key]
         public int RecordID { get; set; }
 
         public int PatientID { get; set; }
