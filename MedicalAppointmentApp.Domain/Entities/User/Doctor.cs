@@ -1,13 +1,14 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace MedicalAppointmentApp.Domain.Entities.Users
+namespace MedicalAppointmentApp.Domain.Entities.User
 {
-    internal sealed class Users_Doctors : Users_Users
+    [Table("Doctors", Schema = "dbo")]
+    public sealed class Doctor : BaseEntity
     {
+        [Key]
         public int DoctorID { get; set; }
         public int SpecialtyID { get; set; }
         public string LicenseNumber { get; set; }

@@ -1,13 +1,13 @@
 ﻿using MedicalAppointmentApp.Domain.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-
-namespace MedicalAppointmentApp.Domain.Entities.Users
+namespace MedicalAppointmentApp.Domain.Entities.User
 {
-    public sealed class Users_Patients : Users_Users
+    [Table("Patients", Schema = "dbo")]
+    public sealed class Patient : BaseEntity
     {
+        [Key]
         public int PatientID { get; set; }
         public DateTime DateOfBirth { get; set; }
         public char Gender { get; set; }
