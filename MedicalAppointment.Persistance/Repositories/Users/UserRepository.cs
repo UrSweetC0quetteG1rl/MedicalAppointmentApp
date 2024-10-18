@@ -146,7 +146,7 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
 
             return await ExecuteOperationWithLogging(async () =>
             {
-                User? userToRemove = await _medicalAppointmentContext.User.FindAsync(entity.UserId);
+                User? userToRemove = await _medicalAppointmentContext.Users.FindAsync(entity.UserId);
 
                 if (userToRemove == null)
                 {

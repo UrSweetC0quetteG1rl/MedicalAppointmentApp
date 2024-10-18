@@ -16,7 +16,7 @@ namespace MedicalAppointmentApp.Domain.Entities.User
         public string? Bio {  get; set; }
         public decimal? ConsultationFee { get; set; }
         public string? ClinicAddress { get; set; }
-        public int? AvailabilityModeld {  get; set; }
+        public int? AvailabilityModelId {  get; set; }
         public DateTime LicenseExpirationDate { get; set; }
 
     }

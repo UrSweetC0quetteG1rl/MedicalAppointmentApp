@@ -10,7 +10,8 @@ namespace MedicalAppointmentApp.Domain.Entities.Insurance
     public class InsuranceProvider
     {
         [Key]
-            public string Nombre { get; set; }
+            public int InsuranceProviderID { get; set; }
+            public string Name { get; set; }
 
             public string ContactNumber { get; set; }
 

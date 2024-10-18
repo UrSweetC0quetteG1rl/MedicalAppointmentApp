@@ -1,8 +1,9 @@
-﻿
-using MedicalAppointment.Persistance.Base;
+﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
+using MedicalAppointment.Persistance.Models.User;
 using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.Users
@@ -142,6 +143,82 @@ namespace MedicalAppointment.Persistance.Repositories.Users
 
                 return await base.Update(patientToUpdate);
             }, "Error actualizando el paciente.");
+        }
+        public async override Task<OperationResult> Remove(Patient entity)
+        {
+            OperationResult operationResult = ValidatePatientEntity(entity);
+
+            if (!operationResult.Success) { return operationResult; }
+
+            return await ExecuteOperationWithLogging(async () =>
+            {
+                Patient? patientToRemove = await _medicalAppointmentContext.Patients.FindAsync(entity.PatientID);
+
+                if (patientToRemove == null)
+                {
+                    return new OperationResult
+                    {
+                        Success = false,
+                        Message = "El usuario no existe."
+                    };
+                }
+                patientToRemove.IsActive = false;
+                patientToRemove.UpdatedAt = entity.UpdatedAt;
+
+                return await base.Update(patientToRemove);
+            }, "Error desactivando el paciente.");
+        }
+        public async override Task<OperationResult> GetAll()
+        {
+            return await ExecuteOperationWithLogging(async () =>
+            {
+                var patiensWithInsurance = await GetPatiensWithRolesQuery().ToListAsync();
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Data = patiensWithInsurance
+                };
+            }, "Error obteniendo los pacientes.");
+
+        }
+        public async override Task<OperationResult> GetEntityBy(int Id)
+        {
+            return await ExecuteOperationWithLogging(async () =>
+            {
+                var atiensWithInsurance = await GetPatiensWithRolesQuery()
+                                       .FirstOrDefaultAsync(patient => patient.PatientID == Id);
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Data = atiensWithInsurance
+                };
+            }, "Error obteniendo el paciente.");
+        }
+
+        private IQueryable<PatientInsurenceProviderModel> GetPatiensWithRolesQuery()
+        {
+            return from patient in _medicalAppointmentContext.Patients
+                   join insuranceProvider in _medicalAppointmentContext.InsuranceProviders on patient.InsuranceProviderID equals  insuranceProvider.InsuranceProviderID
+                   where patient.IsActive
+                   orderby patient.CreatedAt descending
+                   select new PatientInsurenceProviderModel
+                   {
+                       PatientID = patient.PatientID,
+                       DateOfBirth = patient.DateOfBirth,
+                       Gender = patient.Gender,
+                       Address = patient.Address,
+                       EmergencyContactName = patient.EmergencyContactName,
+                       EmergencyContactPhone = patient.EmergencyContactPhone,
+                       BloodType = patient.BloodType,
+                       Allergies = patient.Allergies,
+                       InsuranceProviderID = insuranceProvider.InsuranceProviderID,
+                       InsuranceProviderName = insuranceProvider.Name,
+                       CreatedAt = patient.CreatedAt,
+                       UpdatedAt = patient.UpdatedAt,
+                       IsActive = patient.IsActive
+                   };
         }
     }
 }
