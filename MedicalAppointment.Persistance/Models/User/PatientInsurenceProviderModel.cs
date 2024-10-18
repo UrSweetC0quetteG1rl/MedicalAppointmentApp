@@ -1,13 +1,9 @@
-﻿using MedicalAppointmentApp.Domain.Base;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿
 
-namespace MedicalAppointmentApp.Domain.Entities.User
+namespace MedicalAppointment.Persistance.Models.User
 {
-    [Table("Patients", Schema = "dbo")]
-    public sealed class Patient : BaseEntity
+    public sealed class PatientInsurenceProviderModel
     {
-        [Key]
         public int PatientID { get; set; }
         public DateTime DateOfBirth { get; set; }
         public char Gender { get; set; }
@@ -17,6 +13,9 @@ namespace MedicalAppointmentApp.Domain.Entities.User
         public string BloodType { get; set; }
         public string Allergies { get; set; }
         public int InsuranceProviderID { get; set; }
-
+        public string? InsuranceProviderName { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public bool IsActive { get; set; }
     }
 }

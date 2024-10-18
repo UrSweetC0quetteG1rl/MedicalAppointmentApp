@@ -6,7 +6,7 @@ using MedicalAppointmentApp.Domain.Entities.Medical;
 using MedicalAppointmentApp.Domain.Entities.System;
 using MedicalAppointmentApp.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
-
+//hace conexion con base de datos
 
 namespace MedicalAppointment.Persistance.Context
 {
@@ -17,36 +17,36 @@ namespace MedicalAppointment.Persistance.Context
         { }
 
         #region"Appointment Entities"
-        public DbSet<Appointment> Appointment { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
         public DbSet<DoctorAvailability> DoctorAvailability { get; set; }
         #endregion
-
+        //dbset se encarga de hacer mapeo entre entidad y la base de datos
 
         #region"Insurance Entities"
-        public DbSet<InsuranceProvider> InsuranceProvider { get; set; }
+        public DbSet<InsuranceProvider> InsuranceProviders { get; set; }
         public DbSet<NetworkType> NetworkType { get; set; }
         #endregion
 
 
         #region"Medical Entities"
-        public DbSet<AvailabilityMode> AvailabilityMode { get; set; }
-        public DbSet<MedicalRecord> MedicalRecord { get; set; }
-        public DbSet<Specialty> Specialtie { get; set; }
+        public DbSet<AvailabilityMode> AvailabilityModes { get; set; }
+        public DbSet<MedicalRecord> MedicalRecords { get; set; }
+        public DbSet<Specialty> Specialties { get; set; }
         #endregion
 
 
         #region"System Entities"
-        public DbSet<Notification> Notification { get; set; }
-        public DbSet<Role> Role { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Status> Status { get; set; }
         #endregion
 
 
         #region"User Entities"
-        public DbSet<User> User { get; set; }
-        public DbSet<Patient> Patient { get; set; }
-        public DbSet<Doctor> Doctor { get; set; }
-        public DbSet<Employee> Employee { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Employee> Employees { get; set; }
         #endregion
 
 

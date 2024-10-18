@@ -1,4 +1,5 @@
 ﻿using MedicalAppointment.Persistance.Context;
+using MedicalAppointment.Persistance.Exceptions;
 using MedicalAppointmentApp.Domain.Repositories;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
@@ -11,35 +12,30 @@ namespace MedicalAppointment.Persistance.Base
         private readonly MedicalAppointmentContext _MedicalAppointmentContext;
         private DbSet<TEntity> entities;
 
+        //Se inyecta el contexto para evitar dependencia
         public BaseRepository(MedicalAppointmentContext medicalAppointmentContext) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
             _MedicalAppointmentContext = medicalAppointmentContext;
             this.entities = _MedicalAppointmentContext.Set<TEntity>();
         }
 
-        public virtual async Task<OperationResult> Exists(Expression<Func<TEntity, bool>> filter)
+        public virtual async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
-            OperationResult result = new OperationResult();
             try
             {
-                var exists = await this.entities.AnyAsync(filter);
-                result.Data = exists;
+                return await this.entities.AnyAsync(filter);
             }
             catch (Exception ex)
             {
-                result.Success = false;
-                result.Message = $"Ocurrió el siguiente error: {ex.Message} verificando que existe el registro.";
+                throw new EntityExistsException("Esta entidad ya existe.", ex);
             }
-
-            return result;
         }
-
         public virtual async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();
 
             try
             {
-                var datos = this.entities.ToListAsync();
+                var datos = await this.entities.ToListAsync();
                 result.Data = datos;
             }
             catch (Exception ex) 
@@ -49,7 +45,6 @@ namespace MedicalAppointment.Persistance.Base
             }
             return result;
         }
-
         public virtual async Task<OperationResult> GetEntityBy(int ID)
         {
             OperationResult result = new OperationResult();
@@ -66,7 +61,6 @@ namespace MedicalAppointment.Persistance.Base
             return result;
 
         }
-
         public virtual async Task<OperationResult> Remove(TEntity entity)
         {
             OperationResult result = new OperationResult();
@@ -83,7 +77,6 @@ namespace MedicalAppointment.Persistance.Base
             }
             return result;
         }
-
         public virtual async Task<OperationResult> Save(TEntity entity)
         {
             OperationResult result = new OperationResult();
@@ -99,8 +92,7 @@ namespace MedicalAppointment.Persistance.Base
             }
             return result;
         }
-
-        public async Task<OperationResult> Update(TEntity entity)
+        public virtual async Task<OperationResult> Update(TEntity entity)
         {
             OperationResult result = new OperationResult();
             try

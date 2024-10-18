@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="Models\" />
-    <Folder Include="Repositories\" />
+    <Folder Include="Models\Appointments\" />
+    <Folder Include="Models\Insurance\" />
+    <Folder Include="Models\Medical\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,11 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BackEnd", "BackEnd", "{0582
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnd", "FrontEnd", "{E79FFAD1-CFD2-45BF-911E-CF436B9FD5D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicalAppointmentApp.Domain", "MedicalAppointmentApp.Domain\MedicalAppointmentApp.Domain.csproj", "{06B825FA-6745-4B66-A8E7-7BC93165313B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalAppointmentApp.Domain", "MedicalAppointmentApp.Domain\MedicalAppointmentApp.Domain.csproj", "{06B825FA-6745-4B66-A8E7-7BC93165313B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicalAppointment.Persistance", "MedicalAppointment.Persistance\MedicalAppointment.Persistance.csproj", "{C1411C9D-D658-44E4-A230-523813B58435}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalAppointment.Persistance", "MedicalAppointment.Persistance\MedicalAppointment.Persistance.csproj", "{C1411C9D-D658-44E4-A230-523813B58435}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MedicalAppointment.Infraestructure", "MedicalAppointment.Infraestructure\MedicalAppointment.Infraestructure.csproj", "{C709FB6F-55F9-453D-8954-586A5587BF3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedicalAppointment.Infraestructure", "MedicalAppointment.Infraestructure\MedicalAppointment.Infraestructure.csproj", "{C709FB6F-55F9-453D-8954-586A5587BF3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{3F53FA18-E080-4765-9140-91A7CFC8CA9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
