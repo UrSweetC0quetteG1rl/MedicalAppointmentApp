@@ -1,5 +1,6 @@
 ﻿
 
+using MedicalAppointmentApp.Domain.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,10 +8,13 @@ namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
     [Table("InsuranceProviders", Schema = "dbo")]
     //Orlando Martinez 2020-10382
-    public class InsuranceProvider
+    public class InsuranceProviders : BaseEntity
     {
         [Key]
-            public string Nombre { get; set; }
+
+
+            public int InsuranceProviderID { get; set; }
+            public string Name { get; set; }
 
             public string ContactNumber { get; set; }
 
@@ -34,13 +38,13 @@ namespace MedicalAppointmentApp.Domain.Entities.Insurance
 
             public bool IsPreferred { get; set; }
 
-            public int NetworkTyped { get; set; }
+            public int NetworkTypeId { get; set; }
 
             public string? CustomerSupport { get; set; }
 
             public string? AcceptedRegions { get; set; }
 
-            public decimal? MaxCovereageAmount { get; set; }
+            public decimal? MaxCoverageAmount { get; set; }
 
 }
 }

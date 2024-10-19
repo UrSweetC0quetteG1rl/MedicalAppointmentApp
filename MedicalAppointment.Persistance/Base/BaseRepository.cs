@@ -10,13 +10,14 @@ namespace MedicalAppointment.Persistance.Base
     {
         private readonly MedicalAppointmentContext _MedicalAppointmentContext;
         private DbSet<TEntity> entities;
+        
 
         public BaseRepository(MedicalAppointmentContext medicalAppointmentContext) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
             _MedicalAppointmentContext = medicalAppointmentContext;
             this.entities = _MedicalAppointmentContext.Set<TEntity>();
         }
 
-        public virtual async Task<OperationResult> Exists(Expression<Func<TEntity, bool>> filter)
+        public virtual async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
             OperationResult result = new OperationResult();
             try
@@ -30,7 +31,7 @@ namespace MedicalAppointment.Persistance.Base
                 result.Message = $"Ocurrió el siguiente error: {ex.Message} verificando que existe el registro.";
             }
 
-            return result;
+            return result.Success;
         }
 
         public virtual async Task<OperationResult> GetAll()
@@ -100,7 +101,7 @@ namespace MedicalAppointment.Persistance.Base
             return result;
         }
 
-        public async Task<OperationResult> Update(TEntity entity)
+        public  virtual async Task<OperationResult> Update(TEntity entity)
         {
             OperationResult result = new OperationResult();
             try
