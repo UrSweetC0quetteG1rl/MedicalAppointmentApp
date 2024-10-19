@@ -40,7 +40,7 @@ namespace MedicalAppointment.Persistance.Base
 
             try
             {
-                var datos = this.entities.ToListAsync();
+                var datos = await this.entities.ToListAsync();
                 result.Data = datos;
             }
             catch (Exception ex) 

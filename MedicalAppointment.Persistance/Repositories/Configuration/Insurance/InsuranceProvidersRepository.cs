@@ -1,6 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
-using MedicalAppointment.Persistance.Interfaces.Configuration;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Models;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
@@ -13,12 +13,12 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
 {
-    public class InsuranceProvidersRepository(MedicalAppointmentContext InsuranceContext, ILogger<InsuranceProvidersRepository>logger)
+    public sealed class InsuranceProvidersRepository(MedicalAppointmentContext InsuranceContext, ILogger<InsuranceProvidersRepository>logger)
         : BaseRepository<InsuranceProviders>(InsuranceContext), IInsuranceProvidersRepository
     {
 
-        private readonly MedicalAppointmentContext InsuranceContext;
-        private readonly ILogger<InsuranceProvidersRepository> logger;
+        private readonly MedicalAppointmentContext InsuranceContext = InsuranceContext;
+        private readonly ILogger<InsuranceProvidersRepository> logger = logger;
 
 
         public async override Task<OperationResult> Save(InsuranceProviders entity)
@@ -28,8 +28,8 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
 
 
 
-            result = ValidarEntity(entity);
-            if(!result.Success) return result;
+          /*  result = ValidarEntity(entity);
+            if(!result.Success) return result;*/
 
 
 
@@ -48,6 +48,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
 
                 
                 result = await base.Save(entity);
+                result .Success = true;
             }
 
             catch (Exception ex)

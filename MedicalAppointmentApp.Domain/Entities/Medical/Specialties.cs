@@ -6,7 +6,7 @@ namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
     [Table("Specialties", Schema = "dbo")]
     //Orlando Martinez 2020-10382
-    public class Specialty: BaseEntity
+    public class Specialties: BaseEntity
     {
         [Key]
         public short SpecialtyID { get; set; }

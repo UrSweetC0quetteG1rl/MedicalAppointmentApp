@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MedicalAppointment.Persistance.Interfaces.Configuration
+namespace MedicalAppointment.Persistance.Interfaces.Configuration.Insurance
 {
     public interface IInsuranceProvidersRepository : IBaseRepository<InsuranceProviders>
     {

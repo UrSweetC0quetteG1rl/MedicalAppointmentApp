@@ -2,13 +2,10 @@
 using MedicalAppointmentApp.Domain.Repositories;
 using MedicalAppointmentApp.Domain.Result;
 
-
-namespace MedicalAppointment.Persistance.Interfaces.Configuration
+namespace MedicalAppointment.Persistance.Interfaces.Configuration.Appointments
 {
-    public interface IDoctorAvailabilityRepository : IBaseRepository<DoctorAvailability>
+    public interface IMedicalAppointmentRepository : IBaseRepository<Appointment>
     {
-
-        
 
     }
 }

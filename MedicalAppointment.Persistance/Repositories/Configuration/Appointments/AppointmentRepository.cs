@@ -1,6 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
-using MedicalAppointment.Persistance.Interfaces.Configuration;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
 using MedicalAppointment.Persistance.Models;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Entities.User;
@@ -40,7 +40,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                 return operationResult;
             }
 
-            if (entity.DoctorID == 0)
+            if (entity.DoctorID <= 0)
 
             {
 
@@ -152,7 +152,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
             try
             {
 
-                Appointment? appointmentToRemove = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentsID);
+                Appointment appointmentToRemove = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentsID);
 
                 appointmentToRemove.IsActive = false;
 
@@ -192,7 +192,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                                                   DoctorID = appointment.DoctorID,
                                                   AppointmentDate = appointment.AppointmentDate,
                                                   CreatedAt = appointment.CreatedAt,
-                                                  PatientID = appointment.PatientID,
+                                                  PatientID = appointment.PatientID
 
                                               }).AsNoTracking()
                                               .ToListAsync();

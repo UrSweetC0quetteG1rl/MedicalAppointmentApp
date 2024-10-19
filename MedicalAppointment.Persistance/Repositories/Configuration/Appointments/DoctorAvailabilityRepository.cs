@@ -1,6 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
-using MedicalAppointment.Persistance.Interfaces.Configuration;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.Extensions.Logging;

@@ -30,9 +30,9 @@ namespace MedicalAppointment.Persistance.Context
 
 
         #region"Medical Entities"
-        public DbSet<AvailabilityMode> AvailabilityModes { get; set; }
-        public DbSet<MedicalRecord> MedicalRecords { get; set; }
-        public DbSet<Specialty> Specialties { get; set; }
+        public DbSet<AvailabilityModes> AvailabilityModes { get; set; }
+        public DbSet<MedicalRecords> MedicalRecords { get; set; }
+        public DbSet<Specialties> Specialties { get; set; }
         #endregion
 
 

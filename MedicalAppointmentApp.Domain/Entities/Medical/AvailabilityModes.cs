@@ -7,11 +7,11 @@ namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
     [Table("AvailabilityModes", Schema = "dbo")]
     //Orlando Martinez 2020-10382
-    public class AvailabilityMode: BaseEntity
+    public class AvailabilityModes: BaseEntity
     {
         [Key]
         public short SAvailabilityModeID { get; set; }
 
-        public string Availability_Mode { get; set; }
+        public string AvailabilityMode { get; set; }
     }
 }
