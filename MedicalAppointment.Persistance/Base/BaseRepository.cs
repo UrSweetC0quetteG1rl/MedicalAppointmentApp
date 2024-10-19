@@ -30,9 +30,6 @@ namespace MedicalAppointment.Persistance.Base
                 result.Message = $"Ocurrió el siguiente error: {ex.Message} verificando que existe el registro.";
             }
 
-            return result;
-        }
-
         public virtual async Task<OperationResult> GetAll()
         {
             OperationResult result = new OperationResult();

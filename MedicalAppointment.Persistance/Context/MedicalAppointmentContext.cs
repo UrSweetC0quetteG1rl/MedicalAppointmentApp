@@ -7,7 +7,6 @@ using MedicalAppointmentApp.Domain.Entities.System;
 using MedicalAppointmentApp.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace MedicalAppointment.Persistance.Context
 {
     public partial class MedicalAppointmentContext: DbContext
