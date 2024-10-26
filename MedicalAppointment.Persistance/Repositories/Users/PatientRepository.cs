@@ -1,5 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
+using MedicalAppointment.Persistance.Interfaces.Users;
 using MedicalAppointment.Persistance.Models.User;
 using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
@@ -8,11 +9,17 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.Users
 {
-    public class PatientRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<PatientRepository> logger)
-        : BaseRepository<Patient>(medicalAppointmentContext)
+    public class PatientRepository: BaseRepository<Patient>, IPatientRepository
     {
         private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<PatientRepository> logger;
+        private readonly ILogger<PatientRepository> _logger;
+
+        public PatientRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<PatientRepository> logger)
+        : base(medicalAppointmentContext)
+        {
+            _medicalAppointmentContext = medicalAppointmentContext;
+            _logger = logger;
+        }
 
         private OperationResult ValidatePatientEntity(Patient entity)
         {
@@ -87,7 +94,7 @@ namespace MedicalAppointment.Persistance.Repositories.Users
             {
                 operationResult.Success = false;
                 operationResult.Message = errorMessage;
-                logger.LogError(ex, errorMessage);
+                _logger.LogError(ex, errorMessage);
                 return operationResult;
             }
         }

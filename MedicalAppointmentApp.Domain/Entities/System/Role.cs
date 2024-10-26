@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.System
 {
-    [Table("Roles", Schema = "dbo")]
+    [Table("Roles", Schema = "system")]
     public class Role : BaseEntity
     {
         [Key]

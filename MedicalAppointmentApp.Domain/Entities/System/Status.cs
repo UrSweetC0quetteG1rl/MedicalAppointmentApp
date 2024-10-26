@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.System
 {
-    [Table("Status", Schema = "dbo")]
+    [Table("Status", Schema = "system")]
     public class Status
     {
         [Key]

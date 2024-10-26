@@ -9,11 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.UserRepository
 {
-    public class UserRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<UserRepository> logger) 
-        : BaseRepository<User>(medicalAppointmentContext), IUserRepository
+    public class UserRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<UserRepository> logger)
+        : BaseRepository<User>(medicalAppointmentContext, logger), IUserRepository
     {
-        private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<UserRepository> logger;
+        private readonly MedicalAppointmentContext _medicalAppointmentContext = medicalAppointmentContext;
+        private readonly ILogger<UserRepository> _logger = logger;
 
         private OperationResult ValidateUserEntity(User entity)
         {
@@ -40,13 +40,6 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
                 return operationResult;
             }
 
-            if (entity.PhoneNumber == null)
-            {
-                operationResult.Success = false;
-                operationResult.Message = "El campo teléfono es obligatorio.";
-                return operationResult;
-            }
-
             if (entity.Email == null)
             {
                 operationResult.Success = false;
@@ -61,31 +54,10 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
                 return operationResult;
             }
 
-            if (entity.RoleID == 0)
-            {
-                operationResult.Success = false;
-                operationResult.Message = "Su rol es requerido.";
-                return operationResult;
-            }
-
             operationResult.Success = true;
             return operationResult;
         }
-        private async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
-        {
-            var operationResult = new OperationResult();
-            try
-            {
-                return await operation();
-            }
-            catch (Exception ex)
-            {
-                operationResult.Success = false;
-                operationResult.Message = errorMessage;
-                logger.LogError(ex, errorMessage);
-                return operationResult;
-            }
-        }
+        
 
         public async override Task<OperationResult> Save(User entity)
         {
@@ -118,7 +90,7 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
 
             return await ExecuteOperationWithLogging(async () =>
             {
-                User? userToUpdate = await _medicalAppointmentContext.User.FindAsync(entity.UserId);
+                User? userToUpdate = await _medicalAppointmentContext.Users.FindAsync(entity.UserId);
                 if (userToUpdate == null)
                 {
                     return new OperationResult
@@ -130,7 +102,6 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
                 userToUpdate.RoleID = entity.RoleID;
                 userToUpdate.FirstName = entity.FirstName;
                 userToUpdate.LastName = entity.LastName;
-                userToUpdate.PhoneNumber = entity.PhoneNumber;
                 userToUpdate.Email = entity.Email;
                 userToUpdate.Password = entity.Password;
                 userToUpdate.UpdatedAt = entity.UpdatedAt;//o DateTime.Now ya que se acaba de actualizar
@@ -229,9 +200,10 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
                     };
                 }
 
-                //Simular que es el link al que se le enviara un token para cambiar password
+                
                 var resetToken = Guid.NewGuid().ToString();
                 var resetLink = $"https://MedicalAppointmentApp.com/reset-password?token={resetToken}&email={email}";
+                //simulando link para enviar el token y cambiar la contrase;a
 
                 return new OperationResult
                 {
@@ -301,7 +273,6 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
                        Role = role.RoleName,
                        FirstName = user.FirstName,
                        LastName = user.LastName,
-                       PhoneNumber = user.PhoneNumber,
                        Email = user.Email,
                        Password = user.Password,
                        CreatedAt = user.CreatedAt,

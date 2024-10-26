@@ -1,5 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
+using MedicalAppointment.Persistance.Interfaces.System;
 using MedicalAppointmentApp.Domain.Entities.System;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
@@ -7,11 +8,17 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.System
 {
-    public sealed class RoleRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<RoleRepository> logger) 
-        : BaseRepository<Role>(medicalAppointmentContext)
+    public sealed class RoleRepository: BaseRepository<Role>, IRoleRepository
     {
         private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<RoleRepository> logger;
+        private readonly ILogger<RoleRepository> _logger;
+
+        public RoleRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<RoleRepository> logger)
+        : base(medicalAppointmentContext)
+        {
+            _medicalAppointmentContext = medicalAppointmentContext;
+            _logger = logger;
+        }
 
         private OperationResult ValidateRoleEntity(Role entity)
         {
@@ -52,7 +59,7 @@ namespace MedicalAppointment.Persistance.Repositories.System
             {
                 operationResult.Success = false;
                 operationResult.Message = errorMessage;
-                logger.LogError(ex, errorMessage);
+                _logger.LogError(ex, errorMessage);
                 return operationResult;
             }
         }
@@ -88,7 +95,7 @@ namespace MedicalAppointment.Persistance.Repositories.System
 
             return await ExecuteOperationWithLogging(async () =>
                 {
-                    Role? roleToUpdate = await _medicalAppointmentContext.Role.FindAsync(entity.RoleID);
+                    Role? roleToUpdate = await _medicalAppointmentContext.Roles.FindAsync(entity.RoleID);
                     if (roleToUpdate == null)
                     {
                         return new OperationResult
@@ -112,7 +119,7 @@ namespace MedicalAppointment.Persistance.Repositories.System
 
             return await ExecuteOperationWithLogging(async () =>
             {
-                Role? roleToRemove = await _medicalAppointmentContext.Role.FindAsync(entity.RoleID);
+                Role? roleToRemove = await _medicalAppointmentContext.Roles.FindAsync(entity.RoleID);
 
                 if (roleToRemove == null)
                 {

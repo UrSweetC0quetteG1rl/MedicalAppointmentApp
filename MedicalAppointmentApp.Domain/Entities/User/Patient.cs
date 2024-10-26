@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.User
 {
-    [Table("Patients", Schema = "dbo")]
+    [Table("Patients", Schema = "users")]
     public sealed class Patient : BaseEntity
     {
         [Key]

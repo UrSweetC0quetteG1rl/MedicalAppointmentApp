@@ -7,26 +7,16 @@ using Microsoft.Extensions.Logging;
 
 namespace MedicalAppointment.Persistance.Repositories.System
 {
-    public class NotificationRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<NotificationRepository> logger)
-        : BaseRepository<Notification>(medicalAppointmentContext), INotificationRepository
+    public sealed class NotificationRepository: BaseRepository<Notification>, INotificationRepository
     {
         private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<NotificationRepository> logger;
+        private readonly ILogger<NotificationRepository> _logger;
 
-        private async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
+        public NotificationRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<NotificationRepository> logger)
+        : base(medicalAppointmentContext)
         {
-            var operationResult = new OperationResult();
-            try
-            {
-                return await operation();
-            }
-            catch (Exception ex)
-            {
-                operationResult.Success = false;
-                operationResult.Message = errorMessage;
-                logger.LogError(ex, errorMessage);
-                return operationResult;
-            }
+            _medicalAppointmentContext = medicalAppointmentContext;
+            _logger = logger;
         }
 
         public async Task<OperationResult> ScheduleReminder(int userId, string message, DateTime reminderDate)
@@ -92,10 +82,9 @@ namespace MedicalAppointment.Persistance.Repositories.System
                 };
             }, "Error enviando el recordatorio.");
         }
-
         private void SimulateEmailSending(int userId, string message)
         {
-            logger.LogInformation($"...Enviando email a User: {userId}, Mensaje: {message}");
+            _logger.LogInformation($"...Enviando email a User: {userId}, Mensaje: {message}");
         }
 
     }

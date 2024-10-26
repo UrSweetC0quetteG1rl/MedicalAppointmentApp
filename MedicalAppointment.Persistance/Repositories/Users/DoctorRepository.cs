@@ -1,5 +1,6 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
+using MedicalAppointment.Persistance.Interfaces.Users;
 using MedicalAppointment.Persistance.Models.User;
 using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
@@ -7,11 +8,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 namespace MedicalAppointment.Persistance.Repositories.Users
 {
-    public class DoctorRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<DoctorRepository> logger)
-        : BaseRepository<Doctor>(medicalAppointmentContext)
+    public class DoctorRepository: BaseRepository<Doctor>, IDoctorRepository
     {
         private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<PatientRepository> logger;
+        private readonly ILogger<DoctorRepository> _logger;
+
+        public DoctorRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<DoctorRepository> logger)
+        : base(medicalAppointmentContext)
+        {
+            _medicalAppointmentContext = medicalAppointmentContext;
+            _logger = logger;
+        }
 
         private OperationResult ValidateDoctorEntity(Doctor entity)
         {
@@ -50,21 +57,6 @@ namespace MedicalAppointment.Persistance.Repositories.Users
             }
             operationResult.Success = true;
             return operationResult;
-        }
-        private async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
-        {
-            var operationResult = new OperationResult();
-            try
-            {
-                return await operation();
-            }
-            catch (Exception ex)
-            {
-                operationResult.Success = false;
-                operationResult.Message = errorMessage;
-                logger.LogError(ex, errorMessage);
-                return operationResult;
-            }
         }
 
         public async override Task<OperationResult> Save(Doctor entity)
@@ -172,6 +164,58 @@ namespace MedicalAppointment.Persistance.Repositories.Users
             }, "Error obteniendo el doctor.");
         }
 
+
+        public async Task<OperationResult> GetDoctorBySpecialty(int specialtyId)
+        {
+            return await ExecuteOperationWithLogging(async () =>
+            {
+                var doctorsBySpecialty = await GetDoctorWithSpecialtyAndAvailabilityQuery()
+                    .Where(doctor => doctor.SpecialtyID == specialtyId)
+                    .ToListAsync();
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Data = doctorsBySpecialty
+                };
+            }, $"Error obteniendo doctores con la especialidad {specialtyId}.");
+        }
+        public async Task<OperationResult> GetDoctorByHour(DateTime date, TimeSpan hour)
+        {
+            return await ExecuteOperationWithLogging(async () =>
+            {
+                var doctorsByHour = await (from doctor in _medicalAppointmentContext.Doctors
+                                           join availability in _medicalAppointmentContext.DoctorAvailability
+                                           on doctor.DoctorID equals availability.DoctorID
+                                           where availability.AvaileDate.Date == date.Date &&
+                                                 availability.StartTime.TimeOfDay <= hour &&
+                                                 availability.EndTime.TimeOfDay >= hour &&
+                                                 doctor.IsActive
+                                           select new DoctorSpecialtyAvailabilityAndMode
+                                           {
+                                               DoctorID = doctor.DoctorID,
+                                               SpecialtyID = doctor.SpecialtyID,
+                                               LicenseNumber = doctor.LicenseNumber,
+                                               YearsOfExperience = doctor.YearsOfExperience,
+                                               Bio = doctor.Bio,
+                                               ConsultationFee = doctor.ConsultationFee,
+                                               ClinicAddress = doctor.ClinicAddress,
+                                               AvailabilityModelId = doctor.AvailabilityModelId,
+                                               CreatedAt = doctor.CreatedAt,
+                                               UpdatedAt = doctor.UpdatedAt,
+                                               IsActive = doctor.IsActive,
+                                               AvaileDate = availability.AvaileDate,
+                                               StartTime = availability.StartTime,
+                                               EndTime = availability.EndTime
+                                           }).ToListAsync();
+
+                return new OperationResult
+                {
+                    Success = true,
+                    Data = doctorsByHour
+                };
+            }, $"Error obteniendo doctores disponibles en la fecha {date} y hora {hour}.");
+        }
         private IQueryable<DoctorSpecialtyAvailabilityModel> GetDoctorWithSpecialtyAndAvailabilityQuery()
         {
             return from doctor in _medicalAppointmentContext.Doctors

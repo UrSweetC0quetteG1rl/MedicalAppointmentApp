@@ -3,6 +3,7 @@ using MedicalAppointment.Persistance.Exceptions;
 using MedicalAppointmentApp.Domain.Repositories;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace MedicalAppointment.Persistance.Base
@@ -11,11 +12,29 @@ namespace MedicalAppointment.Persistance.Base
     {
         private readonly MedicalAppointmentContext _MedicalAppointmentContext;
         private DbSet<TEntity> entities;
+        private readonly ILogger<BaseRepository<TEntity>> _logger;
 
         //Se inyecta el contexto para evitar dependencia
-        public BaseRepository(MedicalAppointmentContext medicalAppointmentContext) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
+        public BaseRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<BaseRepository<TEntity>> logger) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
             _MedicalAppointmentContext = medicalAppointmentContext;
+            _logger = logger;
             this.entities = _MedicalAppointmentContext.Set<TEntity>();
+        }
+
+        protected async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
+        {
+            var operationResult = new OperationResult();
+            try
+            {
+                return await operation();
+            }
+            catch (Exception ex)
+            {
+                operationResult.Success = false;
+                operationResult.Message = errorMessage;
+                _logger.LogError(ex, errorMessage);
+                return operationResult;
+            }
         }
 
         public virtual async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
@@ -84,6 +103,11 @@ namespace MedicalAppointment.Persistance.Base
             {
                 entities.Add(entity);
                 await _MedicalAppointmentContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                result.Success = false;
+                result.Message = $"Error al guardar la entidad: {dbEx.Message}. Detalles: {dbEx.InnerException?.Message}";
             }
             catch (Exception ex)
             {
