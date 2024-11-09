@@ -6,20 +6,15 @@ using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MedicalAppointment.Persistance.Repositories.Users
 {
-    public class PatientRepository: BaseRepository<Patient>, IPatientRepository
+    public class PatientRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<PatientRepository> logger) 
+        : BaseRepository<Patient>(medicalAppointmentContext), IPatientRepository
     {
-        private readonly MedicalAppointmentContext _medicalAppointmentContext;
-        private readonly ILogger<PatientRepository> _logger;
-
-        public PatientRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<PatientRepository> logger)
-        : base(medicalAppointmentContext)
-        {
-            _medicalAppointmentContext = medicalAppointmentContext;
-            _logger = logger;
-        }
+        private readonly MedicalAppointmentContext _medicalAppointmentContext = medicalAppointmentContext;
+        private readonly ILogger<PatientRepository> _logger = logger;
 
         private OperationResult ValidatePatientEntity(Patient entity)
         {
@@ -37,6 +32,12 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                 operationResult.Success = false;
                 operationResult.Message = "Es necesario elegir un genero.";
                 return operationResult;
+            }
+
+            if (string.IsNullOrEmpty(entity.PhoneNumber))
+            {
+                operationResult.Success = false;
+                operationResult.Message = "Es necesario el número de telefono.";
             }
 
             if (string.IsNullOrEmpty(entity.Address))
@@ -73,62 +74,27 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                 return operationResult;
             }
 
-            if(entity.InsuranceProviderID == 0)
-            {
-                operationResult.Success = false;
-                operationResult.Message = "Es necesario saber el seguro que usted tiene.";
-                return operationResult;
-            }
-
             operationResult.Success = true;
             return operationResult;
         }
-        private async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
-        {
-            var operationResult = new OperationResult();
-            try
-            {
-                return await operation();
-            }
-            catch (Exception ex)
-            {
-                operationResult.Success = false;
-                operationResult.Message = errorMessage;
-                _logger.LogError(ex, errorMessage);
-                return operationResult;
-            }
-        }
+       
 
         public async override Task<OperationResult> Save(Patient entity)
         {
             OperationResult operationResult = ValidatePatientEntity(entity);
 
-            if (!operationResult.Success)
-            {
-                return operationResult;
-            }
+            if (!operationResult.Success) return operationResult;
 
-            if (await base.Exists(patient => patient.PatientID == entity.PatientID))
-            {
-                return new OperationResult
-                {
-                    Success = false,
-                    Message = "Este paciente ya se encuentra registrado."
-                };
-
-            }
-            return await ExecuteOperationWithLogging(() => base.Save(entity), "Error guardando el paciente.");
+            try { operationResult = await base.Save(entity); }
+            catch (Exception ex) { operationResult = HandleException("Ocurrió un error al guardar el paciente.", ex); }
+            
+            return operationResult;
         }
         public async override Task<OperationResult> Update(Patient entity)
         {
             OperationResult operationResult = ValidatePatientEntity(entity);
-
-            if (!operationResult.Success)
-            {
-                return operationResult;
-            }
-
-            return await ExecuteOperationWithLogging(async () =>
+            if (!operationResult.Success)   return operationResult;
+            try
             {
                 Patient? patientToUpdate = await _medicalAppointmentContext.Patients.FindAsync(entity.PatientID);
                 if (patientToUpdate == null)
@@ -139,25 +105,23 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                         Message = "Este paciente no existe."
                     };
                 }
-                patientToUpdate.DateOfBirth = entity.DateOfBirth;
-                patientToUpdate.Gender = entity.Gender;
-                patientToUpdate.Address = entity.Address;
-                patientToUpdate.EmergencyContactName = entity.EmergencyContactName;
-                patientToUpdate.EmergencyContactPhone = entity.EmergencyContactPhone;
-                patientToUpdate.BloodType = entity.BloodType;
-                patientToUpdate.Allergies = entity.Allergies;
-                patientToUpdate.InsuranceProviderID = entity.InsuranceProviderID;
+                UpdatePatientProperties(patientToUpdate, entity);
+                operationResult = await base.Update(patientToUpdate);
 
-                return await base.Update(patientToUpdate);
-            }, "Error actualizando el paciente.");
+            }
+            catch(Exception ex)
+            {
+                operationResult = HandleException("Error actualizando el usuario.", ex);
+            }
+            return operationResult;
         }
         public async override Task<OperationResult> Remove(Patient entity)
         {
             OperationResult operationResult = ValidatePatientEntity(entity);
-
             if (!operationResult.Success) { return operationResult; }
 
-            return await ExecuteOperationWithLogging(async () =>
+
+            try
             {
                 Patient? patientToRemove = await _medicalAppointmentContext.Patients.FindAsync(entity.PatientID);
 
@@ -166,44 +130,87 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                     return new OperationResult
                     {
                         Success = false,
-                        Message = "El usuario no existe."
+                        Message = "El paciente no existe."
                     };
                 }
                 patientToRemove.IsActive = false;
                 patientToRemove.UpdatedAt = entity.UpdatedAt;
 
-                return await base.Update(patientToRemove);
-            }, "Error desactivando el paciente.");
+                operationResult = await base.Update(patientToRemove);
+            }
+            catch(Exception ex)
+            {
+                operationResult = HandleException("Error desactivando el paciente.", ex);
+            }
+            return operationResult;
         }
         public async override Task<OperationResult> GetAll()
         {
-            return await ExecuteOperationWithLogging(async () =>
+            OperationResult operationResult = new OperationResult();
+
+            try
             {
                 var patiensWithInsurance = await GetPatiensWithRolesQuery().ToListAsync();
 
-                return new OperationResult
-                {
-                    Success = true,
-                    Data = patiensWithInsurance
-                };
-            }, "Error obteniendo los pacientes.");
+                operationResult.Success = true;
+                operationResult.Data = patiensWithInsurance;
+            }
+            catch(Exception ex)
+            {
+                operationResult.Success = false;
+                operationResult.Message = "Error obteniendo los pacientes.";
+                _logger.LogError(operationResult.Message, ex.ToString());
+            }
+            return operationResult;
 
         }
         public async override Task<OperationResult> GetEntityBy(int Id)
         {
-            return await ExecuteOperationWithLogging(async () =>
+            OperationResult operationResult = new OperationResult();
+
+            try
             {
-                var atiensWithInsurance = await GetPatiensWithRolesQuery()
+                var patiensWithInsurance = await GetPatiensWithRolesQuery()
                                        .FirstOrDefaultAsync(patient => patient.PatientID == Id);
 
-                return new OperationResult
+                if(patiensWithInsurance != null)
                 {
-                    Success = true,
-                    Data = atiensWithInsurance
-                };
-            }, "Error obteniendo el paciente.");
+                    operationResult.Success = true;
+                    operationResult.Data = patiensWithInsurance;
+                }
+                else
+                {
+                    operationResult.Success = false;
+                    operationResult.Message = "Paciente no encontrado.";
+                }
+            }
+            catch(Exception ex)
+            {
+                operationResult.Success = false;
+                operationResult.Message = "Error obteniendo el paciente.";
+                _logger.LogError(operationResult.Message, ex.ToString());
+            }
+            return operationResult;
         }
 
+
+        private void UpdatePatientProperties(Patient target, Patient source)
+        {
+            target.DateOfBirth = source.DateOfBirth;
+            target.Gender = source.Gender;
+            target.PhoneNumber = source.PhoneNumber;
+            target.Address = source.Address;
+            target.EmergencyContactName = source.EmergencyContactName;
+            target.EmergencyContactPhone = source.EmergencyContactPhone;
+            target.BloodType = source.BloodType;
+            target.Allergies = source.Allergies;
+            target.InsuranceProviderID = source.InsuranceProviderID;
+        }
+        private OperationResult HandleException(string message, Exception ex)
+        {
+            _logger.LogError(message, ex.ToString());
+            return new OperationResult { Success = false, Message = message };
+        }
         private IQueryable<PatientInsurenceProviderModel> GetPatiensWithRolesQuery()
         {
             return from patient in _medicalAppointmentContext.Patients

@@ -10,6 +10,5 @@ namespace MedicalAppointmentApp.Domain.Entities.System
         [Key]
         public int RoleID { get; set; }
         public string RoleName { get; set; }
-        public string RoleDescription { get; set; }
     }
 }

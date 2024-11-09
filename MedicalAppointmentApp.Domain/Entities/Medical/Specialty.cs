@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
-    [Table("Specialties", Schema = "dbo")]
+    [Table("Specialties", Schema = "medical")]
     //Orlando Martinez 2020-10382
     public class Specialty: BaseEntity
     {

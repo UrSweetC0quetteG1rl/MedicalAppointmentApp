@@ -7,7 +7,7 @@ namespace MedicalAppointment.Persistance.Interfaces.Users
 {
     public interface IDoctorRepository: IBaseRepository<Doctor>
     {
-        Task<OperationResult> GetDoctorBySpecialty(int specialtyId);
-        Task<OperationResult> GetDoctorByHour(DateTime date, TimeSpan hour);
+        Task<OperationResult> GetDoctorsBySpecialty(short specialtyId);
+        Task<OperationResult> DeactivateDoctorById(int doctorId);
     }
 }

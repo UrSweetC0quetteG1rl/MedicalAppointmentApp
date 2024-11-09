@@ -1,9 +1,7 @@
 ﻿using MedicalAppointment.Persistance.Context;
-using MedicalAppointment.Persistance.Exceptions;
 using MedicalAppointmentApp.Domain.Repositories;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace MedicalAppointment.Persistance.Base
@@ -12,40 +10,25 @@ namespace MedicalAppointment.Persistance.Base
     {
         private readonly MedicalAppointmentContext _MedicalAppointmentContext;
         private DbSet<TEntity> entities;
-        private readonly ILogger<BaseRepository<TEntity>> _logger;
 
         //Se inyecta el contexto para evitar dependencia
-        public BaseRepository(MedicalAppointmentContext medicalAppointmentContext, ILogger<BaseRepository<TEntity>> logger) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
+        public BaseRepository(MedicalAppointmentContext medicalAppointmentContext) { //En caso de aceptar otro tipo de contextos se puede ponder DbContext porque hereda de esta
             _MedicalAppointmentContext = medicalAppointmentContext;
-            _logger = logger;
             this.entities = _MedicalAppointmentContext.Set<TEntity>();
-        }
-
-        protected async Task<OperationResult> ExecuteOperationWithLogging(Func<Task<OperationResult>> operation, string errorMessage)
-        {
-            var operationResult = new OperationResult();
-            try
-            {
-                return await operation();
-            }
-            catch (Exception ex)
-            {
-                operationResult.Success = false;
-                operationResult.Message = errorMessage;
-                _logger.LogError(ex, errorMessage);
-                return operationResult;
-            }
         }
 
         public virtual async Task<bool> Exists(Expression<Func<TEntity, bool>> filter)
         {
+            
             try
             {
-                return await this.entities.AnyAsync(filter);
+                var exists = await this.entities.AnyAsync(filter);
+                return exists;
             }
             catch (Exception ex)
             {
-                throw new EntityExistsException("Esta entidad ya existe.", ex);
+                Console.WriteLine($"Ocurrio el siguiente error: {ex.Message} verificando que existe el registro");
+                return false;
             }
         }
         public virtual async Task<OperationResult> GetAll()
@@ -67,6 +50,7 @@ namespace MedicalAppointment.Persistance.Base
         public virtual async Task<OperationResult> GetEntityBy(int ID)
         {
             OperationResult result = new OperationResult();
+
             try
             {
                 var entity = await this.entities.FindAsync(ID);
@@ -128,6 +112,29 @@ namespace MedicalAppointment.Persistance.Base
             {
                 result.Success = false;
                 result.Message =  $"Ocurrio un error {ex.Message} actualizando la entidad.";
+            }
+            return result;
+        }
+        public virtual async Task<OperationResult> RemoveById(int id)
+        {
+            OperationResult result = new OperationResult();
+            try
+            {
+                var entity = await this.entities.FindAsync(id);
+                if (entity == null)
+                {
+                    result.Success = false;
+                    result.Message = $"No se encontró la entidad con ID {id}.";
+                    return result;
+                }
+
+                entities.Remove(entity);
+                await _MedicalAppointmentContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Ocurrió un error {ex.Message} removiendo la entidad.";
             }
             return result;
         }

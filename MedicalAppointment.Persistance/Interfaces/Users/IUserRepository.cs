@@ -6,9 +6,6 @@ namespace MedicalAppointment.Persistance.Interfaces.Users
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        Task<OperationResult> GetUserByEmailAndPassword(string email, string password);
-        Task<OperationResult> ConfirmUserRegistration(string email);
-        Task<OperationResult> ForgotPassword(string email);
-        Task<OperationResult> IsEmailInUse(string email);
+        
     }
 }

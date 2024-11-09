@@ -1,13 +1,13 @@
 ﻿using MedicalAppointment.Persistance.Interfaces.Users;
 using MedicalAppointmentApp.Domain.Entities.User;
-using MedicalAppointmentApp.System.Api.Base;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace MedicalAppointmentApp.Users.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DoctorController : BaseController
+    public class DoctorController : ControllerBase
     {
         private readonly IDoctorRepository _doctorRepository;
 
@@ -21,35 +21,86 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
         [HttpGet("GetDoctors")]
         public async Task<IActionResult> Get()
         {
-            return await HandleRepositoryAction(async () => await _doctorRepository.GetAll());
+            var result = await _doctorRepository.GetAll();
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
         }
 
         
         [HttpGet("GetDoctorById")]
         public async Task<IActionResult> Get(int id)
         {
-            return await HandleRepositoryAction(async () => await _doctorRepository.GetEntityBy(id));
+            var result = await _doctorRepository.GetEntityBy(id);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
-        
+        [HttpGet("GetDoctorBySpecialty")]
+        public async Task<IActionResult> Get(short id)
+        {
+            var result = await _doctorRepository.GetDoctorsBySpecialty(id);
+
+            if (!result.Success) { return BadRequest(result); }
+
+            return Ok(result);
+        }
+
         [HttpPost("SaveDoctor")]
         public async Task<IActionResult> Post([FromBody] Doctor doctor)
         {
-            return await HandleRepositoryAction(async() => await _doctorRepository.Save(doctor));
+            var result = await _doctorRepository.Save(doctor);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok();
         }
 
         
         [HttpPut("UpdateDoctor")]
         public async Task<IActionResult> Put([FromBody] Doctor doctor)
         {
-            return await HandleRepositoryAction(async() => await _doctorRepository.Update(doctor));
+            var result = await _doctorRepository.Update(doctor);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok();
         }
 
-        
+        [HttpPut("DeactivateDoctor")]
+        public async Task<IActionResult> Put(int Id)
+        {
+            var result = await _doctorRepository.DeactivateDoctorById(Id);
+
+            if (!result.Success) { return BadRequest(result); }
+
+            return Ok(result);
+        }
+
+
         [HttpDelete("DeleteDoctor")]
         public async Task<IActionResult> Delete(Doctor doctor)
         {
-            return await HandleRepositoryAction(async() => await _doctorRepository.Remove(doctor));
+            var result = await _doctorRepository.Remove(doctor);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
         }
     }
 }

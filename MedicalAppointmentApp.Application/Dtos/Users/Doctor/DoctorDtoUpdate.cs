@@ -1,0 +1,12 @@
+﻿
+
+using MedicalAppointmentApp.Application.Dtos.Users.User;
+
+namespace MedicalAppointmentApp.Application.Dtos.Users.Doctor
+{
+    public class DoctorDtoUpdate: DoctorBaseDto
+    {
+        public bool IsActive {  get; set; }
+
+    }
+}

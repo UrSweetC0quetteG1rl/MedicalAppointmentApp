@@ -38,12 +38,6 @@ namespace MedicalAppointment.Persistance.Repositories.System
                 return result;
             }
 
-            if (string.IsNullOrEmpty(entity.RoleDescription))
-            {
-                result.Success = false;
-                result.Message = "La descripción del rol es necesaria.";
-                return result;
-            }
 
             result.Success = true;
             return result;
@@ -104,7 +98,7 @@ namespace MedicalAppointment.Persistance.Repositories.System
                             Message = "El rol no existe."
                         };
                     }
-                    roleToUpdate.RoleDescription = entity.RoleDescription;
+                    
                     roleToUpdate.RoleName = entity.RoleName;
                     roleToUpdate.UpdatedAt = entity.UpdatedAt; //o DateTime.Now ya que se acaba de actualizar
 

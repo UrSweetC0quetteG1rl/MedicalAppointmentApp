@@ -1,8 +1,10 @@
 ﻿
 
+using MedicalAppointmentApp.Domain.Base;
+
 namespace MedicalAppointmentApp.Domain.Entities.User
 {
-    public sealed class Employee : User
+    public sealed class Employee 
     {
 
     }
