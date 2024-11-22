@@ -1,6 +1,7 @@
-﻿using MedicalAppointmentApp.Domain.Entities.User;
-using MedicalAppointment.Persistance.Interfaces.Users;
+﻿
 using Microsoft.AspNetCore.Mvc;
+using MedicalAppointmentApp.Application.Contracts.Users;
+using MedicalAppointmentApp.Application.Dtos.Users.User;
 
 
 namespace MedicalAppointmentApp.Users.Api.Controllers
@@ -9,11 +10,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         
@@ -21,9 +22,9 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
         public async Task<IActionResult> Get()
         {
             
-            var result = await _userRepository.GetAll();
-            if (result == null)
-                return NotFound("No se encontraron datos");
+            var result = await _userService.GetAll();
+            if (!result.IsSuccess) {return BadRequest(result); }
+                
 
             return Ok(result);
         }
@@ -32,9 +33,9 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
         [HttpGet("GetUserById")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _userRepository.GetEntityBy(id);
+            var result = await _userService.GetById(id);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -43,11 +44,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpPost("SaveUser")]
-        public async Task<IActionResult> Post([FromBody] User user)
+        public async Task<IActionResult> Post([FromBody] UserDtoSave userDtoSave)
         {
-            var result = await _userRepository.Save(user);
+            var result = await _userService.SaveAsync(userDtoSave);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -58,11 +59,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult>  Put([FromBody] User user)
+        public async Task<IActionResult>  Put([FromBody] UserDtoUpdate userDtoUpdate)
         {
-            var result = await _userRepository.Update(user);
+            var result = await _userService.UpdateAsync(userDtoUpdate);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -72,11 +73,12 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpDelete("DeleteUser")]
-        public async Task<IActionResult> Delete(User user)
+        public async Task<IActionResult> Delete(UserDtoUpdate userDtoUpdate)
         {
-            var result = await _userRepository.Remove(user);
+            var result = await _userService.UpdateAsync(userDtoUpdate);//recuerda modificar el remove agregalo a los servicios
 
-            if (!result.Success)
+
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }

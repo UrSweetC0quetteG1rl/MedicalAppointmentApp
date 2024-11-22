@@ -6,7 +6,7 @@ namespace MedicalAppointmentApp.Application.Dtos.Users.Doctor
 {
     public class DoctorDtoUpdate: DoctorBaseDto
     {
-        public bool IsActive {  get; set; }
+        
 
     }
 }

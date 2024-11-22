@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MedicalAppointment.Persistance\MedicalAppointment.Persistance.csproj" />
+    <ProjectReference Include="..\MedicalAppointmentApp.IOC\MedicalAppointmentApp.IOC.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,5 +9,6 @@ namespace MedicalAppointment.Persistance.Interfaces.Users
     {
         Task<OperationResult> GetDoctorsBySpecialty(short specialtyId);
         Task<OperationResult> DeactivateDoctorById(int doctorId);
+        Task<OperationResult> GetDoctorById(int doctorId);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using MedicalAppointment.Persistance.Interfaces.Users;
-using MedicalAppointment.Persistance.Repositories.Users;
+using MedicalAppointmentApp.Application.Contracts.Users;
+using MedicalAppointmentApp.Application.Dtos.Users.Patient;
 using MedicalAppointmentApp.Domain.Entities.User;
-using MedicalAppointmentApp.System.Api.Base;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
+
 
 namespace MedicalAppointmentApp.Users.Api.Controllers
 {
@@ -11,11 +11,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-        private readonly IPatientRepository _patientRepository;
+        private readonly    IPatientService _patientService;
 
-        public PatientController(IPatientRepository patientRepository)
+        public PatientController(IPatientService patientService)
         {
-            _patientRepository = patientRepository;
+            _patientService = patientService;
         }
 
 
@@ -23,9 +23,9 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
         [HttpGet("GetPatients")]
         public async Task<IActionResult> Get()
         {
-            var result = await _patientRepository.GetAll();
-            if (result == null)
-                return NotFound("No se encontraron datos");
+            var result = await _patientService.GetAll();
+            if (!result.IsSuccess)
+                return BadRequest(result);
 
             return Ok(result);
         }
@@ -34,8 +34,8 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
         [HttpGet("GetPatientById")]
         public async Task<IActionResult> Get(int id)
         {
-            var result = await _patientRepository.GetEntityBy(id);
-            if (!result.Success)
+            var result = await _patientService.GetById(id);
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -44,11 +44,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpPost("SavePatient")]
-        public async Task<IActionResult> Post([FromBody] Patient patient)
+        public async Task<IActionResult> Post([FromBody] PatientDtoSave patientDtoSave)
         {
-            var result = await _patientRepository.Save(patient);
+            var result = await _patientService.SaveAsync(patientDtoSave);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -58,11 +58,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpPut("UpdatePatient")]
-        public async Task<IActionResult> Put([FromBody] Patient patient)
+        public async Task<IActionResult> Put([FromBody] PatientDtoUpdate patientDtoUpdate)
         {
-            var result = await _patientRepository.Update(patient);
+            var result = await _patientService.UpdateAsync(patientDtoUpdate);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -72,11 +72,11 @@ namespace MedicalAppointmentApp.Users.Api.Controllers
 
         
         [HttpDelete("DeletePatient")]
-        public async Task<IActionResult> Delete(Patient patient)
+        public async Task<IActionResult> Delete(PatientDtoUpdate patientDtoUpdate)
         {
-            var result = await _patientRepository.Remove(patient);
+            var result = await _patientService.UpdateAsync(patientDtoUpdate);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
-    [Table("InsuranceProviders", Schema = "dbo")]
+    [Table("InsuranceProviders", Schema = "Insurance")]
     //Orlando Martinez 2020-10382
     public class InsuranceProvider
     {

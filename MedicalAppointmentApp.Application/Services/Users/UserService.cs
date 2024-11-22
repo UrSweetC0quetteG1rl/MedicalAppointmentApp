@@ -1,24 +1,29 @@
 ﻿
 
 using MedicalAppointment.Persistance.Interfaces.Users;
-using MedicalAppointmentApp.Application.Base;
+using MedicalAppointment.Persistance.Models.User;
+using MedicalAppointmentApp.Application.Contracts.System;
+using MedicalAppointmentApp.Application.Contracts.Users;
 using MedicalAppointmentApp.Application.Dtos.Users.User;
 using MedicalAppointmentApp.Application.Responses.Users.User;
 using MedicalAppointmentApp.Domain.Entities.User;
 using Microsoft.Extensions.Logging;
 
-namespace MedicalAppointmentApp.Application.Services
+namespace MedicalAppointmentApp.Application.Services.Users
 {
-    public class UserService : IBaseService<UserResponse, UserDtoSave, UserDtoUpdate>
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly ILogger<UserService> _logger;
+        //private readonly INotificationService notificationService;
+
         public UserService(IUserRepository userRepository, ILogger<UserService> logger)
         {
             if (userRepository is null) { throw new ArgumentNullException(nameof(userRepository)); }
 
-            this._userRepository = userRepository;
-            this._logger = logger;
+            _userRepository = userRepository;
+            _logger = logger;
+            //this.notificationService = notificationService; //implementar el notification
         }
         public async Task<UserResponse> GetAll()
         {
@@ -36,7 +41,7 @@ namespace MedicalAppointmentApp.Application.Services
                 }
                 userResponse.Data = result.Data;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 userResponse.IsSuccess = false;
                 userResponse.Message = "Error obteninedo los usuarios";
@@ -90,7 +95,7 @@ namespace MedicalAppointmentApp.Application.Services
                 result.Message = "El usuario fue creado correctamente.";
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 userResponse.IsSuccess = false;
                 userResponse.Message = "Error guardando los usuarios";
@@ -105,7 +110,7 @@ namespace MedicalAppointmentApp.Application.Services
 
             try
             {
-                var resultGet = await _userRepository.GetEntityBy(dto.UserId);
+                var resultGet = await _userRepository.GetUserById(dto.UserId);
 
                 if (!resultGet.Success)
                 {
@@ -113,6 +118,7 @@ namespace MedicalAppointmentApp.Application.Services
                     userResponse.Message = resultGet.Message;
                     return userResponse;
                 }
+
 
                 User user = (User)resultGet.Data;
 
@@ -128,8 +134,9 @@ namespace MedicalAppointmentApp.Application.Services
                 var result = await _userRepository.Update(user);
                 result.Message = "El usuario fue actualizado correctamente.";
 
+
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 userResponse.IsSuccess = false;
                 userResponse.Message = "Error actualizando el usuario.";

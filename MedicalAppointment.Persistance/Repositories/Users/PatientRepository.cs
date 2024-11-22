@@ -234,5 +234,31 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                        IsActive = patient.IsActive
                    };
         }
+
+        public async Task<OperationResult> GetPatientById(int patientId)
+        {
+            
+                OperationResult operationResult = new OperationResult();
+                try
+                {
+                    var patient = await this._medicalAppointmentContext.Patients.FindAsync(patientId);
+
+                    if (patient is null)
+                    {
+                        operationResult.Success = false;
+                        operationResult.Message = "El usuario no se encuentra registrado.";
+                        return operationResult;
+                    }
+                    operationResult.Data = patient;
+                }
+                catch (Exception ex)
+                {
+                    operationResult.Message = "Ocurrio un error obteniendo el paciente.";
+                    operationResult.Success = false;
+                    this._logger.LogError(operationResult.Message, ex.ToString());
+                }
+                return operationResult;
+            
+        }
     }
 }

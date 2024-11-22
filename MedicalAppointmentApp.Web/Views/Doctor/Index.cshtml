@@ -1,0 +1,82 @@
+﻿@model IEnumerable<MedicalAppointment.Persistance.Models.User.DoctorSpecialtyAvailabilityModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>List of doctors</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialtyID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SpecialtyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConsultationFee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClinicAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DoctorID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialtyID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SpecialtyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Bio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConsultationFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClinicAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UpdatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.DoctorID }) |
+                @Html.ActionLink("Details", "Details", new { id=item.DoctorID}) 
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -2,14 +2,15 @@
 
 using MedicalAppointment.Persistance.Interfaces.Users;
 using MedicalAppointmentApp.Application.Base;
+using MedicalAppointmentApp.Application.Contracts.Users;
 using MedicalAppointmentApp.Application.Dtos.Users.Doctor;
 using MedicalAppointmentApp.Application.Responses.Users.Doctor;
 using MedicalAppointmentApp.Domain.Entities.User;
 using Microsoft.Extensions.Logging;
 
-namespace MedicalAppointmentApp.Application.Services
+namespace MedicalAppointmentApp.Application.Services.Users
 {
-    public class DoctorService : IBaseService<DoctorResponse, DoctorDtoSave, DoctorDtoUpdate>
+    public class DoctorService :IDoctorService
     {
         private readonly IDoctorRepository _doctorRepository;
         private readonly ILogger<DoctorService> _logger;
@@ -17,8 +18,8 @@ namespace MedicalAppointmentApp.Application.Services
         {
             if (doctorRepository is null) { throw new ArgumentNullException(nameof(doctorRepository)); }
 
-            this._doctorRepository = doctorRepository;
-            this._logger = logger;
+            _doctorRepository = doctorRepository;
+            _logger = logger;
         }
 
         public async Task<DoctorResponse> GetAll()
@@ -92,8 +93,9 @@ namespace MedicalAppointmentApp.Application.Services
                 doctor.LicenseExpirationDate = dto.LicenseExpirationDate;
                 doctor.CreatedAt = dto.CreatedAt;
 
+                var result = await _doctorRepository.Save(doctor);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 doctorResponse.IsSuccess = false;
                 doctorResponse.Message = "Error guardando el doctor";
@@ -108,7 +110,7 @@ namespace MedicalAppointmentApp.Application.Services
 
             try
             {
-                var resultGet = await _doctorRepository.GetEntityBy(dto.DoctorID);
+                var resultGet = await _doctorRepository.GetDoctorById(dto.DoctorID);
 
                 if (!resultGet.Success)
                 {
@@ -134,7 +136,7 @@ namespace MedicalAppointmentApp.Application.Services
 
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 doctorResponse.IsSuccess = false;
                 doctorResponse.Message = "Error actualizando el doctor";

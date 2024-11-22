@@ -1,7 +1,9 @@
 ﻿
+using MedicalAppointmentApp.Application.Core;
+
 namespace MedicalAppointmentApp.Application.Base
 {
-    public interface IBaseService<TResponse, TSaveDto, TUpdateDto>
+    public interface IBaseService<TResponse, TSaveDto, TUpdateDto> where TResponse : BaseResponse
     {
         Task<TResponse> SaveAsync(TSaveDto dto);
         Task<TResponse> UpdateAsync(TUpdateDto dto);

@@ -2,7 +2,6 @@
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Users;
 using MedicalAppointment.Persistance.Models.User;
-using MedicalAppointmentApp.Domain.Entities.Insurance;
 using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
@@ -188,6 +187,29 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
 
             return operationResult;
         }
+        public async Task<OperationResult> GetUserById(int userId)
+        {
+            OperationResult operationResult = new OperationResult();
+            try
+            {
+                var user = await this._medicalAppointmentContext.Users.FindAsync(userId);
+
+                if (user is null)
+                {
+                    operationResult.Success = false;
+                    operationResult.Message = "El usuario no se encuentra registrado.";
+                    return operationResult;
+                }
+                operationResult.Data = user;
+            }
+            catch (Exception ex) 
+            {
+                operationResult.Message = "Ocurrio un error obteniendo el usuario.";
+                operationResult.Success = false;
+                this._logger.LogError(operationResult.Message, ex.ToString());
+            }
+            return operationResult;
+        }
 
         private IQueryable<UserRoleModel> GetUsersWithRolesQuery()
         {
@@ -226,4 +248,6 @@ namespace MedicalAppointment.Persistance.Repositories.UserRepository
 
 
     }
+
+
 }

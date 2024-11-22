@@ -7,7 +7,6 @@ namespace MedicalAppointmentApp.Application.Dtos.Users.User
 
         public string Password { get; set; }
         public int? RoleID { get; set; }
-        public bool IsActive { get; set; }
 
     }
 }

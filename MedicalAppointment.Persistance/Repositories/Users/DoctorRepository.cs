@@ -183,6 +183,8 @@ namespace MedicalAppointment.Persistance.Repositories.Users
             return operationResult;
         }
 
+        
+
 
         public async Task<OperationResult> DeactivateDoctorById(int doctorId)
         {
@@ -273,6 +275,32 @@ namespace MedicalAppointment.Persistance.Repositories.Users
                       UpdatedAt = doctor.UpdatedAt,
                       IsActive = doctor.IsActive
                    };
+        }
+
+        public async Task<OperationResult> GetDoctorById(int doctorId)
+        {
+            
+                OperationResult operationResult = new OperationResult();
+                try
+                {
+                    var doctor = await this._medicalAppointmentContext.Doctors.FindAsync(doctorId);
+
+                    if (doctor is null)
+                    {
+                        operationResult.Success = false;
+                        operationResult.Message = "El usuario no se encuentra registrado.";
+                        return operationResult;
+                    }
+                    operationResult.Data = doctor;
+                }
+                catch (Exception ex)
+                {
+                    operationResult.Message = "Ocurrio un error obteniendo el doctor.";
+                    operationResult.Success = false;
+                    this._logger.LogError(operationResult.Message, ex.ToString());
+                }
+                return operationResult;
+            
         }
     }
     }

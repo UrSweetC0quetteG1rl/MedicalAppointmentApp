@@ -6,6 +6,6 @@ namespace MedicalAppointment.Persistance.Interfaces.Users
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        
+        Task<OperationResult> GetUserById(int userId);
     }
 }
