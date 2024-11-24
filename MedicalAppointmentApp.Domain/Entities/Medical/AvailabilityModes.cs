@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
-    [Table("AvailabilityModes", Schema = "dbo")]
+    [Table("AvailabilityModes", Schema = "medical")]
     //Orlando Martinez 2020-10382
     public class AvailabilityModes: BaseEntity
     {

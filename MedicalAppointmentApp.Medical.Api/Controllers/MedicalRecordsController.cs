@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Medical;
+using MedicalAppointmentApp.Domain.Entities.Medical;
+using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace MedicalAppointmentApp.Medical.Api.Controllers
 {
@@ -8,36 +10,72 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
     [ApiController]
     public class MedicalRecordsController : ControllerBase
     {
-        // GET: api/<MedicalRecordsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        private readonly IMedicalRecordsRepository _medicalRecordsRepository;
+
+        public MedicalRecordsController(IMedicalRecordsRepository medicalRecordsRepository)
         {
-            return new string[] { "value1", "value2" };
+            _medicalRecordsRepository = medicalRecordsRepository;
         }
 
-        // GET api/<MedicalRecordsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+
+
+        [HttpGet("GetSpecialties")]
+        public async Task<IActionResult> GetSpecialties()
         {
-            return "value";
+            var result = await _medicalRecordsRepository.GetAll();
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
         }
 
-        // POST api/<MedicalRecordsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+
+
+
+        [HttpPost("SavesAvailibitymode")]
+        public async Task<IActionResult> Post([FromBody] MedicalRecords medicalRecordsRepository)
         {
+            var result = await _medicalRecordsRepository.Save(medicalRecordsRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
+
         }
 
-        // PUT api/<MedicalRecordsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+
+        [HttpPost("ModifyAvailibitymode")]
+        public async Task<IActionResult> Put([FromBody] MedicalRecords medicalRecordsRepository)
         {
+            var result = await _medicalRecordsRepository.Update(medicalRecordsRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
         }
 
-        // DELETE api/<MedicalRecordsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+
+        [HttpPost("DisableAvailibitymode")]
+        public async Task<IActionResult> DisableNetwork(MedicalRecords medicalRecordsRepository)
         {
+            var result = await _medicalRecordsRepository.Remove(medicalRecordsRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
         }
     }
 }

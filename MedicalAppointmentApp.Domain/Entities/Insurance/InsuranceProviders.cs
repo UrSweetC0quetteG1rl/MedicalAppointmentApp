@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.Insurance
 {
-    [Table("InsuranceProviders", Schema = "dbo")]
+    [Table("InsuranceProviders", Schema = "Insurance")]
     //Orlando Martinez 2020-10382
     public class InsuranceProviders : BaseEntity
     {
@@ -40,11 +40,13 @@ namespace MedicalAppointmentApp.Domain.Entities.Insurance
 
             public int NetworkTypeId { get; set; }
 
-            public string? CustomerSupport { get; set; }
+            public string? CustomerSupportContact { get; set; }
 
             public string? AcceptedRegions { get; set; }
 
             public decimal? MaxCoverageAmount { get; set; }
+
+
 
 }
 }

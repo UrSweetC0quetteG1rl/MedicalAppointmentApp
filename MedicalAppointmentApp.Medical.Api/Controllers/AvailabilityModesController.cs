@@ -1,6 +1,7 @@
 ﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Medical;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
+using MedicalAppointmentApp.Domain.Entities.Medical;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -21,10 +22,10 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
 
 
 
-        [HttpGet("GetNetWorkType")]
-        public async Task<IActionResult> GetNetworkTypes()
+        [HttpGet("GetAvailibitymode")]
+        public async Task<IActionResult> GetAvailibitymode()
         {
-            var result = await _networkTypeRepository.GetAll();
+            var result = await _availibityModesRepository.GetAll();
             if (result == null)
                 return NotFound("No se encontraron datos");
 
@@ -32,17 +33,12 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
         }
 
 
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+     
 
-
-        [HttpPost("SavesNet")]
-        public async Task<IActionResult> Post([FromBody] NetworkType networkType)
+        [HttpPost("SavesAvailibitymode")]
+        public async Task<IActionResult> Post([FromBody] AvailabilityModes availabilityModes)
         {
-            var result = await _networkTypeRepository.Save(networkType);
+            var result = await _availibityModesRepository.Save(availabilityModes);
 
             if (!result.Success)
             {
@@ -55,10 +51,10 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
         }
 
 
-        [HttpPost("ModifyNetwork")]
-        public async Task<IActionResult> Put([FromBody] NetworkType networkType)
+        [HttpPost("ModifyAvailibitymode")]
+        public async Task<IActionResult> Put([FromBody] AvailabilityModes availabilityModes)
         {
-            var result = await _networkTypeRepository.Update(networkType);
+            var result = await _availibityModesRepository.Update(availabilityModes);
 
             if (!result.Success)
             {
@@ -70,10 +66,10 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
         }
 
 
-        [HttpPost("DisableNetwork")]
-        public async Task<IActionResult> DisableNetwork(NetworkType networkType)
+        [HttpPost("DisableAvailibitymode")]
+        public async Task<IActionResult> DisableNetwork(AvailabilityModes availabilityModes)
         {
-            var result = await _networkTypeRepository.Remove(networkType);
+            var result = await _availibityModesRepository.Remove(availabilityModes);
 
             if (!result.Success)
             {

@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.Medical
 {
-    [Table("Specialties", Schema = "dbo")]
+    [Table("Specialties", Schema = "medical")]
     //Orlando Martinez 2020-10382
     public class Specialties: BaseEntity
     {
         [Key]
         public short SpecialtyID { get; set; }
 
-        public string SpecialtyName { get; set; }
+        public string? SpecialtyName { get; set; }
     }
 }

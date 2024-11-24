@@ -15,8 +15,8 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
         : BaseRepository<AvailabilityModes>(avialabilityModeContext), IAvailabilityModesRepository
 
     {
-        private readonly MedicalAppointmentContext avialabilityModeContext;
-        private readonly ILogger<AvailabilityModesRepository> logger;
+        private readonly MedicalAppointmentContext avialabilityModeContext = avialabilityModeContext;
+        private readonly ILogger<AvailabilityModesRepository> logger = logger;
 
 
 
@@ -27,19 +27,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
 
             operationResult = ValidarAvialaMode(entity);
             if (!operationResult.Success) return operationResult;
-
-
-
-            if (await base.Exists(avialabilityModeContext => avialabilityModeContext.AvailabilityMode == entity.AvailabilityMode))
-            {
-
-                operationResult.Success = false;
-                operationResult.Message = "Ya existe.";
-                return operationResult;
-
-
-            }
-
 
             try
             {
@@ -246,7 +233,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
 
 
 
-            operationResult.Success = false;
+            operationResult.Success = true;
             return operationResult;
 
 

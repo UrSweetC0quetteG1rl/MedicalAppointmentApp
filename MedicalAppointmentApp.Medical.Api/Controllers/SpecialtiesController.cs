@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Medical;
+using MedicalAppointment.Persistance.Repositories.Configuration.Medical;
+using MedicalAppointmentApp.Domain.Entities.Medical;
+using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace MedicalAppointmentApp.Medical.Api.Controllers
 {
@@ -8,36 +11,72 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
     [ApiController]
     public class SpecialtiesController : ControllerBase
     {
-        // GET: api/<SpecialtiesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        private readonly ISpecialtiesRepository _specialtiesRepository;
+
+        public SpecialtiesController(ISpecialtiesRepository specialtiesRepository)
         {
-            return new string[] { "value1", "value2" };
+            _specialtiesRepository = specialtiesRepository;
         }
 
-        // GET api/<SpecialtiesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+
+
+        [HttpGet("GetSpecialties")]
+        public async Task<IActionResult> GetAvailibitymode()
         {
-            return "value";
+            var result = await _specialtiesRepository.GetAll();
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
         }
 
-        // POST api/<SpecialtiesController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+
+
+
+        [HttpPost("SavesSpecialties")]
+        public async Task<IActionResult> Post([FromBody] Specialties specialtiesRepository)
         {
+            var result = await _specialtiesRepository.Save(specialtiesRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
+
         }
 
-        // PUT api/<SpecialtiesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+
+        [HttpPost("ModifySpecialties")]
+        public async Task<IActionResult> Put([FromBody] Specialties specialtiesRepository)
         {
+            var result = await _specialtiesRepository.Update(specialtiesRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
         }
 
-        // DELETE api/<SpecialtiesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+
+        [HttpPost("DisableSpecialties")]
+        public async Task<IActionResult> DisableSpecialties(Specialties specialtiesRepository)
         {
+            var result = await _specialtiesRepository.Remove(specialtiesRepository);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+
+            return Ok();
         }
     }
 }

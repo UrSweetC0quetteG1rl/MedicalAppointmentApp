@@ -27,7 +27,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
             operationResult = ValidarSpecialty(entity);
             if (!operationResult.Success) return operationResult;
 
-            if (await base.Exists(specialty => specialty.SpecialtyID == entity.SpecialtyID && specialty.SpecialtyName == entity.SpecialtyName))
+           /* if (await base.Exists(specialty => specialty.SpecialtyID == entity.SpecialtyID && specialty.SpecialtyName == entity.SpecialtyName))
             {
 
                 operationResult.Success = false;
@@ -35,7 +35,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
                 return operationResult;
 
 
-            }
+            }*/
 
 
             try

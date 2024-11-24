@@ -1,4 +1,5 @@
 ﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
+using MedicalAppointment.Persistance.Repositories.Configuration.Insurance;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,16 +32,20 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
 
         
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetNetworkTypes(int id)
         {
-            return "value";
+            var result = await _networkTypeRepository.GetEntityBy(id);
+
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
         }
 
-        
         [HttpPost("SavesNet")]
         public async Task<IActionResult> Post([FromBody] NetworkType networkType)
         {
-            var result = await _networkTypeRepository.Save(networkType);
+            var result = await _networkTypeRepository?.Save(networkType);
 
             if (!result.Success)
             {

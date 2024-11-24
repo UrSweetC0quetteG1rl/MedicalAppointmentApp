@@ -1,13 +1,14 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MedicalAppointment.Persistance.Models
+namespace MedicalAppointment.Aplication.Dtos.Configuration.Appointment
 {
-    public class InsuranceProvidersNetworkModel
+    public class InsuranceProvidersBaseDto : DtoBase
     {
-
         public int InsuranceProviderID { get; set; }
-
-        public int NetworkTypeId { get; set; }
         public string Name { get; set; }
 
         public string ContactNumber { get; set; }
@@ -32,7 +33,7 @@ namespace MedicalAppointment.Persistance.Models
 
         public bool IsPreferred { get; set; }
 
-       
+        public int NetworkTypeId { get; set; }
 
         public string? CustomerSupportContact { get; set; }
 
@@ -40,10 +41,7 @@ namespace MedicalAppointment.Persistance.Models
 
         public decimal? MaxCoverageAmount { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public bool IsActive { get; set; }
-
+        
 
 
     }

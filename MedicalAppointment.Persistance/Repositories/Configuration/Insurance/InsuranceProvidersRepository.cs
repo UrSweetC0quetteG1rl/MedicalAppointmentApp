@@ -28,12 +28,12 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
 
 
 
-          /*  result = ValidarEntity(entity);
-            if(!result.Success) return result;*/
+            result = ValidarEntity(entity);
+            if(!result.Success) return result;
 
 
 
-            if (await base.Exists(insurance => insurance.Name == entity.Name && insurance.ContactNumber == entity.ContactNumber && insurance.Email == entity.Email && insurance.CustomerSupport == entity.CustomerSupport)) 
+          /*  if (await base.Exists(insurance => insurance.Name == entity.Name)) 
             {
 
                 result.Success = false;
@@ -41,14 +41,14 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 return result;
 
 
-            }
+            }*/
 
             try 
             {
 
                 
                 result = await base.Save(entity);
-                result .Success = true;
+                result.Success = true;
             }
 
             catch (Exception ex)
@@ -106,7 +106,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 insuranceProviderToUpdate.CoverageDetails = entity.CoverageDetails;
                 insuranceProviderToUpdate.LogoUrl = entity.LogoUrl;
                 insuranceProviderToUpdate.IsPreferred = entity.IsPreferred;
-                insuranceProviderToUpdate.CustomerSupport = entity.CustomerSupport;
+                insuranceProviderToUpdate.CustomerSupportContact = entity.CustomerSupportContact;
                 insuranceProviderToUpdate.AcceptedRegions = entity.AcceptedRegions;
                 insuranceProviderToUpdate.MaxCoverageAmount = entity.MaxCoverageAmount;
                 insuranceProviderToUpdate.UpdatedAt = DateTime .Now;
@@ -206,7 +206,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                                          ZipCode = InsuranceProvider.ZipCode,
                                          CoverageDetails = InsuranceProvider.CoverageDetails,
                                          IsPreferred = InsuranceProvider.IsPreferred,
-                                         CustomerSupport = InsuranceProvider.CustomerSupport,
+                                         CustomerSupportContact = InsuranceProvider.CustomerSupportContact,
                                          AcceptedRegions = InsuranceProvider.AcceptedRegions,
                                          MaxCoverageAmount = InsuranceProvider.MaxCoverageAmount,
                                          CreatedAt = InsuranceProvider.CreatedAt,
@@ -232,6 +232,58 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
 
         }
 
+
+        public async override Task<OperationResult> GetEntityBy(int ID)
+        {
+            OperationResult result = new OperationResult();
+
+
+            try
+            {
+
+                result.Data = await (from InsuranceProvider in InsuranceContext.InsuranceProviders
+                                     where InsuranceProvider.IsActive == true
+                                     && InsuranceProvider.InsuranceProviderID == ID
+                                     select new InsuranceProvidersNetworkModel()
+                                     {
+
+
+                                         InsuranceProviderID = InsuranceProvider.InsuranceProviderID,
+
+                                         Name = InsuranceProvider.Name,
+                                         ContactNumber = InsuranceProvider.ContactNumber,
+                                         Email = InsuranceProvider.Email,
+                                         Website = InsuranceProvider.Website,
+                                         Address = InsuranceProvider.Address,
+                                         City = InsuranceProvider.City,
+                                         Country = InsuranceProvider.Country,
+                                         ZipCode = InsuranceProvider.ZipCode,
+                                         CoverageDetails = InsuranceProvider.CoverageDetails,
+                                         IsPreferred = InsuranceProvider.IsPreferred,
+                                         CustomerSupportContact = InsuranceProvider.CustomerSupportContact,
+                                         AcceptedRegions = InsuranceProvider.AcceptedRegions,
+                                         MaxCoverageAmount = InsuranceProvider.MaxCoverageAmount,
+                                         CreatedAt = InsuranceProvider.CreatedAt,
+                                         UpdatedAt = InsuranceProvider.UpdatedAt,
+                                         IsActive = InsuranceProvider.IsActive,
+
+                                     }).AsNoTracking()
+                                     .ToListAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+
+                result.Success = false;
+                result.Message = "Error obteniendo los seguros";
+                logger.LogError(result.Message, ex.ToString());
+
+            }
+
+
+            return result;
+        }
 
 
         private OperationResult ValidarEntity(InsuranceProviders entity)
@@ -326,7 +378,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 return result;
             }
 
-            if (string.IsNullOrEmpty(entity.CustomerSupport))
+            if (string.IsNullOrEmpty(entity.CustomerSupportContact))
             {
                 result.Success = false;
                 result.Message = "Ingrese contacto de Soporte";

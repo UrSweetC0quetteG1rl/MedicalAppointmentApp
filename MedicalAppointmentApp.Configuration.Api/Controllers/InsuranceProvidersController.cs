@@ -1,9 +1,11 @@
-﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
+﻿using MedicalAppointment.Aplication.Contracts;
+using MedicalAppointment.Aplication.Dtos.Configuration.Appointment;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Repositories.Configuration.Insurance;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace MedicalAppointmentApp.Configuration.Api.Controllers
 {
@@ -12,20 +14,20 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
     public class InsuranceProvidersController : ControllerBase
     {
 
-        private readonly IInsuranceProvidersRepository _insuranceProvidersRepository;
+        private readonly IInsuranceProviders _insuranceProviders;
 
 
-        public InsuranceProvidersController (IInsuranceProvidersRepository insuranceProvidersRepository)
+        public InsuranceProvidersController (IInsuranceProviders insuranceProvidersRepository)
         {
-            _insuranceProvidersRepository = insuranceProvidersRepository;
+            _insuranceProviders = insuranceProvidersRepository;
         }
 
 
         [HttpGet("GetInsutanceProviders")]
-        public async Task<IActionResult> GetNetworkTypes()
+        public async Task<IActionResult> GetInsuranceProviders()
         {
-            var result = await _insuranceProvidersRepository.GetAll();
-            if (result == null)
+            var result = await _insuranceProviders.GetAll();
+            if (!result.IsSuccess)
                 return NotFound("No se encontraron datos");
 
             return Ok(result);
@@ -33,18 +35,24 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
 
 
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> GetInsuranceProviders(int id)
         {
-            return "value";
+            var result = await _insuranceProviders.GetById(id);
+           
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
         }
 
 
         [HttpPost("SavesInsurance")]
-        public async Task<IActionResult> Post([FromBody] InsuranceProviders InsuranceProviders)
+        public async Task<IActionResult> Post([FromBody] InsuranceProvidersSaveDto insuranceProvidersSaveDto)
         {
-            var result = await _insuranceProvidersRepository.Save(InsuranceProviders);
+            var result = await _insuranceProviders.SaveAsync(insuranceProvidersSaveDto);
+           
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -56,11 +64,11 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
 
 
         [HttpPost("ModifyInsurance")]
-        public async Task<IActionResult> Put([FromBody] InsuranceProviders InsuranceProviders)
+        public async Task<IActionResult> Put([FromBody] InsuranceProvidersUpdateDto insuranceProvidersUpdateDto)
         {
-            var result = await _insuranceProvidersRepository.Update(InsuranceProviders);
+            var result = await _insuranceProviders.UpdateAsync(insuranceProvidersUpdateDto);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -71,11 +79,11 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
 
 
         [HttpPost("DisableInsurance")]
-        public async Task<IActionResult> DisableNetwork(InsuranceProviders InsuranceProviders)
+        public async Task<IActionResult> DisableNetwork(InsuranceProvidersUpdateDto insuranceProvidersUpdateDto)
         {
-            var result = await _insuranceProvidersRepository.Remove(InsuranceProviders);
+            var result = await _insuranceProviders.UpdateAsync(insuranceProvidersUpdateDto);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
