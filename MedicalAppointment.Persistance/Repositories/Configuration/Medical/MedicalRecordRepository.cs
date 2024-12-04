@@ -2,6 +2,7 @@
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Medical;
 using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Medical;
 using MedicalAppointmentApp.Domain.Entities.Medical;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;

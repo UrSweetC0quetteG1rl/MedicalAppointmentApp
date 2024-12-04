@@ -1,4 +1,7 @@
-﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
+﻿using MedicalAppointment.Aplication.Contracts.Appointment;
+using MedicalAppointment.Aplication.Services.Appointment;
+using MedicalAppointment.Aplication.Services.AppointmentsMe;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
 using MedicalAppointment.Persistance.Repositories.Configuration.Appointments;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +14,12 @@ namespace MedicalAppointmentApp.IOC.Dependencies.Configuration
         {
            
             services.AddScoped<IMedicalAppointmentRepository, AppointmentRepository>();
+
             services.AddScoped<IDoctorAvailabilityRepository, DoctorAvailabilityRepository>();
+
+            services.AddTransient<IAppointment,AppointmentsServices>();
+
+            services.AddTransient<IDoctorAvailability, DoctorAvailablityServices>();
 
             
 

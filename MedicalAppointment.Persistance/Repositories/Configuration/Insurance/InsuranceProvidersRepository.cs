@@ -2,6 +2,7 @@
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Insurnaces;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
 using MedicalAppointmentApp.Domain.Result;
@@ -93,7 +94,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 }
 
 
-
+                insuranceProviderToUpdate.InsuranceProviderID = entity.InsuranceProviderID;
                 insuranceProviderToUpdate.Name = entity.Name;
                 insuranceProviderToUpdate.ContactNumber = entity.ContactNumber;
                 insuranceProviderToUpdate.Email = entity.Email;
@@ -108,6 +109,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 insuranceProviderToUpdate.IsPreferred = entity.IsPreferred;
                 insuranceProviderToUpdate.CustomerSupportContact = entity.CustomerSupportContact;
                 insuranceProviderToUpdate.AcceptedRegions = entity.AcceptedRegions;
+                insuranceProviderToUpdate.NetworkTypeId = entity.NetworkTypeId;
                 insuranceProviderToUpdate.MaxCoverageAmount = entity.MaxCoverageAmount;
                 insuranceProviderToUpdate.UpdatedAt = DateTime .Now;
                 insuranceProviderToUpdate.IsActive = entity.IsActive;
@@ -157,7 +159,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 InsuranceProviders? insuranceProviderToRemove = await InsuranceContext.InsuranceProviders.FindAsync(entity.InsuranceProviderID);
 
 
-                insuranceProviderToRemove.IsActive = false;
+                
                 insuranceProviderToRemove.UpdatedAt = DateTime .Now;
 
                 await base.Update(insuranceProviderToRemove);
@@ -187,31 +189,34 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             {
 
                 result.Data = await (from InsuranceProvider in InsuranceContext.InsuranceProviders
-                                     
-                                     where InsuranceProvider.IsActive == true
+                                     join NetworkType in InsuranceContext.NetworkType on InsuranceProvider.NetworkTypeId equals NetworkType.NetworkTypeId
+                                     where InsuranceProvider.InsuranceProviderID >= 0
                                      orderby InsuranceProvider.CreatedAt descending
                                      select new InsuranceProvidersNetworkModel()
                                      {
 
 
                                          InsuranceProviderID = InsuranceProvider.InsuranceProviderID,
-                                         
+                                         NetworkTypeId = NetworkType.NetworkTypeId,
                                          Name = InsuranceProvider.Name,
                                          ContactNumber = InsuranceProvider.ContactNumber,
                                          Email = InsuranceProvider.Email,
                                          Website = InsuranceProvider.Website,
                                          Address = InsuranceProvider.Address,
                                          City = InsuranceProvider.City,
+                                         State = InsuranceProvider.State,
                                          Country = InsuranceProvider.Country,
                                          ZipCode = InsuranceProvider.ZipCode,
                                          CoverageDetails = InsuranceProvider.CoverageDetails,
+                                         LogoUrl = InsuranceProvider.LogoUrl,
                                          IsPreferred = InsuranceProvider.IsPreferred,
                                          CustomerSupportContact = InsuranceProvider.CustomerSupportContact,
-                                         AcceptedRegions = InsuranceProvider.AcceptedRegions,
+                                         AcceptedRegions = InsuranceProvider.AcceptedRegions,                                         
                                          MaxCoverageAmount = InsuranceProvider.MaxCoverageAmount,
                                          CreatedAt = InsuranceProvider.CreatedAt,
                                          UpdatedAt = InsuranceProvider.UpdatedAt,
                                          IsActive = InsuranceProvider.IsActive,
+                                         
 
                                      }).AsNoTracking()
                                      .ToListAsync();
@@ -241,9 +246,9 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             try
             {
 
-                result.Data = await (from InsuranceProvider in InsuranceContext.InsuranceProviders
-                                     where InsuranceProvider.IsActive == true
-                                     && InsuranceProvider.InsuranceProviderID == ID
+                result.Data = await (from InsuranceProvider in InsuranceContext.InsuranceProviders join NetworkType in InsuranceContext.NetworkType on 
+                                     InsuranceProvider.NetworkTypeId equals NetworkType.NetworkTypeId
+                                     where InsuranceProvider.InsuranceProviderID == ID
                                      select new InsuranceProvidersNetworkModel()
                                      {
 
@@ -256,19 +261,23 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                                          Website = InsuranceProvider.Website,
                                          Address = InsuranceProvider.Address,
                                          City = InsuranceProvider.City,
+                                         State = InsuranceProvider.State,
                                          Country = InsuranceProvider.Country,
                                          ZipCode = InsuranceProvider.ZipCode,
                                          CoverageDetails = InsuranceProvider.CoverageDetails,
+                                         LogoUrl = InsuranceProvider.LogoUrl,
                                          IsPreferred = InsuranceProvider.IsPreferred,
                                          CustomerSupportContact = InsuranceProvider.CustomerSupportContact,
                                          AcceptedRegions = InsuranceProvider.AcceptedRegions,
+                                         NetworkTypeId = InsuranceProvider.NetworkTypeId,
                                          MaxCoverageAmount = InsuranceProvider.MaxCoverageAmount,
                                          CreatedAt = InsuranceProvider.CreatedAt,
                                          UpdatedAt = InsuranceProvider.UpdatedAt,
                                          IsActive = InsuranceProvider.IsActive,
+                                         
 
                                      }).AsNoTracking()
-                                     .ToListAsync();
+                                     .FirstOrDefaultAsync();
 
 
             }

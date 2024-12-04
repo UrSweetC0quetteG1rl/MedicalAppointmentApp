@@ -1,5 +1,5 @@
-﻿using MedicalAppointment.Aplication.Contracts;
-using MedicalAppointment.Aplication.Dtos.Configuration.Appointment;
+﻿using MedicalAppointment.Aplication.Contracts.Insurance;
+using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.InsuranceProviders;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Repositories.Configuration.Insurance;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
@@ -63,7 +63,7 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
         }
 
 
-        [HttpPost("ModifyInsurance")]
+        [HttpPost("UpdateInsurance")]
         public async Task<IActionResult> Put([FromBody] InsuranceProvidersUpdateDto insuranceProvidersUpdateDto)
         {
             var result = await _insuranceProviders.UpdateAsync(insuranceProvidersUpdateDto);
@@ -78,18 +78,6 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
         }
 
 
-        [HttpPost("DisableInsurance")]
-        public async Task<IActionResult> DisableNetwork(InsuranceProvidersUpdateDto insuranceProvidersUpdateDto)
-        {
-            var result = await _insuranceProviders.UpdateAsync(insuranceProvidersUpdateDto);
-
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
-
-
-            return Ok();
-        }
+       
     }
 }

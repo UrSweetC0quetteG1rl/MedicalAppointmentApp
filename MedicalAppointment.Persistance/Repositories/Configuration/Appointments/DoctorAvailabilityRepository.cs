@@ -1,8 +1,12 @@
 ﻿using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
+using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Appointments;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
+using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using System.Linq.Expressions;
@@ -88,13 +92,12 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
             result = ValidarEndTime(entity);
             if (!result.Success) return result;
 
-            await base.Update(entity);
 
             try
             {
-                DoctorAvailability? doctorAvailabilityToUpdate = await context.DoctorAvailability.FindAsync(entity.AvailabilityID);
+                DoctorAvailability doctorAvailabilityToUpdate = await context.DoctorAvailability.FindAsync(entity.AvailabilityID);
 
-                doctorAvailabilityToUpdate.AvailaDate = entity.AvailaDate;
+                doctorAvailabilityToUpdate.AvailableDate = entity.AvailableDate;
                 doctorAvailabilityToUpdate.StartTime = entity.StartTime;
                 doctorAvailabilityToUpdate.EndTime = entity.EndTime;
 
@@ -117,9 +120,81 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
 
         }
 
-        public Task<bool> Exists(Expression<Func<IDoctorAvailabilityRepository, bool>> filter)
+        public async override Task<OperationResult> GetAll()
         {
-            throw new NotImplementedException();
+
+            OperationResult operationResult = new OperationResult();
+
+
+            try
+            {
+
+                operationResult.Data = await (from DoctorAvailability in context.DoctorAvailability
+                                              join Doctor in context.Doctors on DoctorAvailability.DoctorID equals Doctor.DoctorID
+                                              where DoctorAvailability.AvailabilityID >= 0                                              
+                                              select new DoctorAvailabilityModel()
+                                              {
+
+                                                  AvailabilityID = DoctorAvailability.AvailabilityID,
+                                                  DoctorID = DoctorAvailability.DoctorID,
+                                                  AvailableDate = DoctorAvailability.AvailableDate,
+                                                  StartTime = DoctorAvailability.StartTime,
+                                                  EndTime = DoctorAvailability.EndTime,
+
+
+
+                                              }).AsNoTracking()
+                                     .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                operationResult.Success = false;
+                operationResult.Message = "Error obteniendo las Disponibilidad";
+                logger.LogError(operationResult.Message, ex.ToString());
+            }
+            return operationResult;
+
+
+
+
+        }
+
+        public async override Task<OperationResult> GetEntityBy(int ID)
+        {
+            OperationResult result = new OperationResult();
+
+
+            try
+            {
+
+                result.Data = await (from DoctorAvailability in context.DoctorAvailability
+                                     join Doctor in context.Doctors on DoctorAvailability.DoctorID equals Doctor.DoctorID
+                                     where DoctorAvailability.AvailabilityID == ID
+                                     select new DoctorAvailabilityModel()
+                                     {
+
+
+                                         AvailabilityID = DoctorAvailability.AvailabilityID,
+                                         DoctorID = DoctorAvailability.DoctorID,
+                                         AvailableDate = DoctorAvailability.AvailableDate,
+                                         StartTime = DoctorAvailability.StartTime,
+                                         EndTime = DoctorAvailability.EndTime,
+
+
+                                     }).AsNoTracking()
+                                     .FirstOrDefaultAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+
+                result.Success = false;
+                result.Message = "Error obteniendo los seguros";
+                logger.LogError(result.Message, ex.ToString());
+
+            }
+             return result;
         }
 
         public async override Task<OperationResult> Remove(DoctorAvailability entity)
@@ -149,7 +224,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
 
                 DoctorAvailability? doctorAvailabilityToRemove = await context.DoctorAvailability.FindAsync(entity.AvailabilityID);
 
-                doctorAvailabilityToRemove.IsActive = false;
+                
 
             }
 
@@ -169,7 +244,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
         {
             OperationResult result = new OperationResult();
 
-            if (entity.AvailaDate <= DateTime.Now)
+            if (entity.AvailableDate <= DateTime.Now)
             {
                 result.Success = false;
                 result.Message = "La fecha seleccionada es inválida.";
@@ -197,7 +272,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
         {
             OperationResult result = new OperationResult();
 
-            if (entity.AvailaDate <= DateTime.Now)
+            if (entity.AvailableDate <= DateTime.Now)
             {
                 result.Success = false;
                 result.Message = "La fecha seleccionada es inválida.";

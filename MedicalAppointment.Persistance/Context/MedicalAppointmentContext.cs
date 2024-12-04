@@ -18,7 +18,7 @@ namespace MedicalAppointment.Persistance.Context
         }
 
         #region"Appointments Entities"
-        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<Appointments> Appointments { get; set; }
         public DbSet<DoctorAvailability> DoctorAvailability { get; set; }
         #endregion
 

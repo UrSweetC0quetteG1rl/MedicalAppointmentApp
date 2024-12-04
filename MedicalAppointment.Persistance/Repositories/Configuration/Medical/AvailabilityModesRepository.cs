@@ -4,6 +4,7 @@ using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Medical;
 using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Medical;
 using MedicalAppointmentApp.Domain.Entities.Medical;
 using MedicalAppointmentApp.Domain.Result;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
             return operationResult;
 
         }
-
 
         public async override Task<OperationResult> Update(AvailabilityModes entity)
         {
@@ -102,10 +102,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
             return operationResult;
         }
 
-
-
-
-
         public async override Task<OperationResult> Remove(AvailabilityModes entity)
         {
             OperationResult operationResult = new OperationResult();
@@ -156,7 +152,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Medical
 
             return operationResult;
         }
-
 
         public async override Task<OperationResult> GetAll()
         {

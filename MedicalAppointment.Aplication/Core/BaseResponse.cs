@@ -6,7 +6,7 @@ namespace MedicalAppointment.Aplication.Core
     {
        protected BaseResponse() 
         {
-        IsSuccess = true; 
+        this.IsSuccess = true; 
         
         }
 

@@ -2,6 +2,8 @@
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Appointments;
 using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Appointments;
+using MedicalAppointment.Persistance.Models.Insurnaces;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Entities.User;
 using MedicalAppointmentApp.Domain.Result;
@@ -11,17 +13,15 @@ using Microsoft.Extensions.Logging;
 namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
 {
     public class AppointmentRepository(MedicalAppointmentContext appointmentContext, ILogger<AppointmentRepository> logger)
-        : BaseRepository<Appointment>(appointmentContext), IMedicalAppointmentRepository
+        : BaseRepository<MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments>(appointmentContext), IMedicalAppointmentRepository
     {
         private readonly MedicalAppointmentContext _MedicalAppointmentContext = appointmentContext;
         private readonly ILogger<AppointmentRepository> logger = logger;
 
 
-        public async override Task<OperationResult> Save(Appointment entity)
+        public async override Task<OperationResult> Save(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
         {
             OperationResult operationResult = new OperationResult();
-
-
 
             if (entity == null)
             {
@@ -29,7 +29,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                 operationResult.Success = false;
                 operationResult.Message = "Esta entidad no Puede ser Nula.";
                 return operationResult;
-
 
             }
 
@@ -47,19 +46,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                 operationResult.Success = false;
                 operationResult.Message = "Debe seleccionar un Doctor.";
                 return operationResult;
-            }
-
-            if (await base.Exists(appointment => appointment.AppointmentDate == entity.AppointmentDate && appointment.DoctorID == entity.DoctorID))
-            {
-
-
-                operationResult.Success = false;
-                operationResult.Message = "Ya existe una cita para ese horario";
-                return operationResult;
-
-
-
-            }
+            }          
 
             try
             {
@@ -81,7 +68,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
         }
 
 
-        public async override Task<OperationResult> Update(Appointment entity)
+        public async override Task<OperationResult> Update(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
         {
             OperationResult operationResult = new OperationResult();
 
@@ -100,7 +87,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
 
             try
             {
-                Appointment? appointmentToUpdate = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentsID);
+                MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments? appointmentToUpdate = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentID);
 
                 if (appointmentToUpdate == null)
                 {
@@ -110,7 +97,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                 }
 
 
-                if (entity.AppointmentsID <= 0)
+                if (entity.AppointmentID <= 0)
                 {
                     operationResult.Success = false;
                     operationResult.Message = "No se encontró la cita con el ID proporcionado.";
@@ -119,7 +106,8 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
 
                 appointmentToUpdate.AppointmentDate = entity.AppointmentDate;
                 appointmentToUpdate.UpdatedAt = DateTime.Today;
-                appointmentToUpdate.IsActive = entity.IsActive;
+                appointmentToUpdate.StatusID = entity.StatusID;
+                
 
                 operationResult = await base.Update(appointmentToUpdate);
             }
@@ -134,7 +122,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
             return operationResult;
         }
 
-        public async override Task<OperationResult> Remove(Appointment entity)
+        public async override Task<OperationResult> Remove(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
         {
 
 
@@ -152,9 +140,9 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
             try
             {
 
-                Appointment appointmentToRemove = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentsID);
+                MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments appointmentToRemove = await _MedicalAppointmentContext.Appointments.FindAsync(entity.AppointmentID);
 
-                appointmentToRemove.IsActive = false;
+                appointmentToRemove.StatusID = 2;
 
                 await base.Update(appointmentToRemove);
 
@@ -188,14 +176,18 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
                                               select new AppointmentDoctorModel
                                               {
 
-                                                  AppointmentID = appointment.AppointmentsID,
+                                                  AppointmentID = appointment.AppointmentID,
                                                   DoctorID = appointment.DoctorID,
+                                                  PatientID = appointment.PatientID,
                                                   AppointmentDate = appointment.AppointmentDate,
                                                   CreatedAt = appointment.CreatedAt,
-                                                  PatientID = appointment.PatientID
+                                                  UpdateAt = appointment.UpdatedAt,
+                                                  StatusID = appointment.StatusID,
+                                                  
+                                                  
 
-                                              }).AsNoTracking()
-                                              .ToListAsync();
+                                              })
+                                             .ToListAsync();
             }
             catch (Exception ex)
             {
@@ -211,11 +203,53 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
         }
 
 
-        private OperationResult ValidarAppointmentID(Appointment entity)
+        public async override Task<OperationResult> GetEntityBy(int ID)
         {
             OperationResult result = new OperationResult();
 
-            if (entity.AppointmentsID <= 0)
+
+            try
+            {
+
+                result.Data = await (from appointment in _MedicalAppointmentContext.Appointments
+                                     join Doctor in _MedicalAppointmentContext.Doctors on appointment.DoctorID equals Doctor.DoctorID
+                                     where appointment.AppointmentID == ID
+                                     select new AppointmentDoctorModel()
+                                     {
+
+
+                                         AppointmentID = appointment.AppointmentID,
+                                         DoctorID = appointment.DoctorID,
+                                         PatientID = appointment.PatientID,
+                                         AppointmentDate = appointment.AppointmentDate,
+                                         CreatedAt = appointment.CreatedAt,
+                                         UpdateAt = appointment.UpdatedAt,
+                                         StatusID = appointment.StatusID,
+
+
+                                     }).AsNoTracking()
+                                     .FirstOrDefaultAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+
+                result.Success = false;
+                result.Message = "Error obteniendo los seguros";
+                logger.LogError(result.Message, ex.ToString());
+
+            }
+
+
+            return result;
+        }
+
+        private OperationResult ValidarAppointmentID(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
+        {
+            OperationResult result = new OperationResult();
+
+            if (entity.AppointmentID <= 0)
             {
                 result.Success = false;
                 result.Message = "El numero cita es requerida.";
@@ -226,7 +260,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
             return result;
         }
 
-        private OperationResult ValidarEntityNotNull(Appointment entity)
+        private OperationResult ValidarEntityNotNull(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
         {
             OperationResult Operationresult = new OperationResult();
 
@@ -241,7 +275,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Appointments
         }
 
 
-        private OperationResult ValidateAppointmentDate(Appointment entity)
+        private OperationResult ValidateAppointmentDate(MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments entity)
         {
             OperationResult result = new OperationResult();
 

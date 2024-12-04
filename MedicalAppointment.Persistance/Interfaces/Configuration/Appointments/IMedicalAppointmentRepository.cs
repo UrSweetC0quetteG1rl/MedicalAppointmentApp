@@ -4,7 +4,7 @@ using MedicalAppointmentApp.Domain.Result;
 
 namespace MedicalAppointment.Persistance.Interfaces.Configuration.Appointments
 {
-    public interface IMedicalAppointmentRepository : IBaseRepository<Appointment>
+    public interface IMedicalAppointmentRepository : IBaseRepository<MedicalAppointmentApp.Domain.Entities.Appoinments.Appointments>
     {
 
     }

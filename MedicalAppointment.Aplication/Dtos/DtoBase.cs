@@ -11,6 +11,6 @@ namespace MedicalAppointment.Aplication.Dtos
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
-        public bool IsActice { get; set; }
+        public bool IsActive { get; set; }
     }
 }

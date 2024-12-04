@@ -5,6 +5,7 @@ using MedicalAppointment.Persistance.Base;
 using MedicalAppointment.Persistance.Context;
 using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Models;
+using MedicalAppointment.Persistance.Models.Insurnaces;
 using MedicalAppointment.Persistance.Repositories.Configuration.Appointments;
 using MedicalAppointmentApp.Domain.Entities.Appoinments;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
@@ -27,14 +28,6 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             _networkContext = networkContext;
             _logger = logger;
         }
-
-
-
-
-
-
-
-
 
         public async override Task<OperationResult> Save(NetworkType entity)
         {
@@ -94,14 +87,14 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             OperationResult operationResult = new OperationResult();
 
 
-            operationResult = ValidarNetWorkType(entity);
-            if (!operationResult.Success) return operationResult;
-
             try
             {
 
 
                 NetworkType? networkTypeToUpdate = await _networkContext.NetworkType.FindAsync(entity.NetworkTypeId);
+
+                operationResult = ValidarNetWorkType(entity);
+                if (!operationResult.Success) return operationResult;
 
                 if (networkTypeToUpdate == null)
                 {
@@ -110,7 +103,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                     return operationResult;
                 }
 
-
+                networkTypeToUpdate.NetworkTypeId = entity.NetworkTypeId;
                 networkTypeToUpdate.Description = entity.Description;
                 networkTypeToUpdate.Name = entity.Name;
                 networkTypeToUpdate.UpdatedAt = DateTime.Now;
@@ -194,7 +187,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 operationResult.Data = await (from NetworkType in _networkContext.NetworkType
                                               where NetworkType.IsActive == true
                                               orderby NetworkType.CreatedAt descending
-                                              select new NetworkTypeModel
+                                              select new NetworkTypeModel()
                                               {
 
                                                   NetworkTypeId = NetworkType.NetworkTypeId,
@@ -217,6 +210,46 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             }
             return operationResult;
         }
+        public async override Task<OperationResult> GetEntityBy(int ID)
+        {
+            OperationResult result = new OperationResult();
+
+
+            try
+            {
+
+                result.Data = await (from NetworkType in _networkContext.NetworkType                                     
+                                     where NetworkType.NetworkTypeId == ID
+                                     select new NetworkTypeModel()
+                                     {
+
+
+                                         NetworkTypeId = NetworkType.NetworkTypeId,
+                                         Name = NetworkType.Name,
+                                         Description = NetworkType.Description,
+                                         CreatedAt = NetworkType.CreatedAt,
+                                         UpdateAt = NetworkType.UpdatedAt,
+                                         IsActive = NetworkType.IsActive
+
+
+                                     }).AsNoTracking()
+                                     .FirstOrDefaultAsync();
+
+
+            }
+            catch (Exception ex)
+            {
+
+                result.Success = false;
+                result.Message = "Error obteniendo los seguros";
+                _logger.LogError(result.Message, ex.ToString());
+
+            }
+
+
+            return result;
+        }
+
 
 
         private OperationResult ValidarNetWorkType(NetworkType entity)

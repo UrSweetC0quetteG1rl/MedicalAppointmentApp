@@ -1,4 +1,6 @@
-﻿using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
+﻿using MedicalAppointment.Aplication.Contracts.Insurance;
+using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.NetworkType;
+using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
 using MedicalAppointment.Persistance.Repositories.Configuration.Insurance;
 using MedicalAppointmentApp.Domain.Entities.Insurance;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +13,9 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
     [ApiController]
     public class NetworkTypeController : ControllerBase
     {
-        private readonly INetworkTypeRepository _networkTypeRepository;
+        private readonly INetworkType _networkTypeRepository;
 
-        public NetworkTypeController(INetworkTypeRepository networkTypeRepository) 
+        public NetworkTypeController(INetworkType networkTypeRepository) 
         {
            _networkTypeRepository = networkTypeRepository;
         }
@@ -24,7 +26,7 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
         public async Task<IActionResult> GetNetworkTypes()
         {
             var result = await _networkTypeRepository.GetAll();
-            if (result == null)
+            if (!result.IsSuccess)
                 return NotFound("No se encontraron datos");
 
             return Ok(result);
@@ -32,22 +34,22 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
 
         
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetNetworkTypes(int id)
+        public async Task<IActionResult> GetNetworkTypesById(int id)
         {
-            var result = await _networkTypeRepository.GetEntityBy(id);
+            var result = await _networkTypeRepository.GetById(id);
 
-            if (result == null)
+            if (!result.IsSuccess)
                 return NotFound("No se encontraron datos");
 
             return Ok(result);
         }
 
         [HttpPost("SavesNet")]
-        public async Task<IActionResult> Post([FromBody] NetworkType networkType)
+        public async Task<IActionResult> Post([FromBody] NetworkSaveDto networkSaveDto)
         {
-            var result = await _networkTypeRepository?.Save(networkType);
+            var result = await _networkTypeRepository.SaveAsync(networkSaveDto);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -58,12 +60,12 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
         }
 
        
-        [HttpPost("ModifyNetwork")]
-        public async Task<IActionResult> Put([FromBody] NetworkType networkType)
+        [HttpPost("UpdateNetwork")]
+        public async Task<IActionResult> Put([FromBody] NetworkUpdateDto networkUpdateDto)
         {
-            var result = await _networkTypeRepository.Update(networkType);
+            var result = await _networkTypeRepository.UpdateAsync(networkUpdateDto);
 
-            if (!result.Success)
+            if (!result.IsSuccess)
             {
                 return BadRequest(result);
             }
@@ -73,19 +75,7 @@ namespace MedicalAppointmentApp.Configuration.Api.Controllers
         }
 
 
-        [HttpPost("DisableNetwork")]
-        public async Task<IActionResult> DisableNetwork(NetworkType networkType)
-        {
-            var result = await _networkTypeRepository.Remove(networkType);
-
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-
-
-            return Ok();
-        }
+     
 
     }
 }

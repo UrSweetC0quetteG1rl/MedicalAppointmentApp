@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedicalAppointmentApp.Domain.Entities.System
 {
-    [Table("Notifications", Schema = "dbo")]
+    [Table("Notifications", Schema = "system")]
     public class Notification
     {
         [Key]

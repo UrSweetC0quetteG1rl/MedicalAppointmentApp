@@ -12,6 +12,6 @@ namespace MedicalAppointmentApp.Domain.Entities.Medical
         [Key]
         public short SAvailabilityModeID { get; set; }
 
-        public string AvailabilityMode { get; set; }
+        public string? AvailabilityMode { get; set; }
     }
 }
