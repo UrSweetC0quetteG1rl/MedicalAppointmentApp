@@ -1,8 +1,5 @@
 ﻿using MedicalAppointment.Aplication.Contracts.Insurance;
 using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.InsuranceProviders;
-using MedicalAppointment.Persistance.Interfaces.Configuration.Insurance;
-using MedicalAppointment.Persistance.Repositories.Configuration.Insurance;
-using MedicalAppointmentApp.Domain.Entities.Insurance;
 using Microsoft.AspNetCore.Mvc;
 
 

@@ -3,7 +3,7 @@ using MedicalAppointment.Aplication.Dtos.Configuration.Appointment.Appointments;
 using MedicalAppointment.Persistance.Models.Appointments;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalAppointment.Web.Controllers
+namespace MedicalAppointment.Web.Controllers.Appointments
 {
     public class AppointmentController : Controller
     {
@@ -92,7 +92,7 @@ namespace MedicalAppointment.Web.Controllers
         {
             try
             {
-                
+
                 var result = await _appointment.UpdateAsync(appointmentUpdateDto);
 
                 if (result.IsSuccess)

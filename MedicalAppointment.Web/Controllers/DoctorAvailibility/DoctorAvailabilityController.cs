@@ -6,7 +6,7 @@ using MedicalAppointment.Persistance.Models.Insurnaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalAppointment.Web.Controllers
+namespace MedicalAppointment.Web.Controllers.DoctorAvailibility
 {
     public class DoctorAvailabilityController : Controller
     {

@@ -5,7 +5,7 @@ using MedicalAppointmentApp.Domain.Entities.Insurance;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalAppointment.Web.Controllers
+namespace MedicalAppointment.Web.Controllers.NetworkType
 {
     public class NetWorkController : Controller
     {
@@ -23,7 +23,7 @@ namespace MedicalAppointment.Web.Controllers
 
             if (result.IsSuccess)
             {
-                List<NetworkTypeModel>networkTypes = (List<NetworkTypeModel>)result.Data;
+                List<NetworkTypeModel> networkTypes = (List<NetworkTypeModel>)result.Data;
 
                 return View(networkTypes);
             }

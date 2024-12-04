@@ -3,7 +3,7 @@ using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.InsuranceProvid
 using MedicalAppointment.Persistance.Models.Insurnaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalAppointment.Web.Controllers
+namespace MedicalAppointment.Web.Controllers.InsuranceProviders
 {
     public class InsuranceProvidersController : Controller
     {
@@ -46,13 +46,13 @@ namespace MedicalAppointment.Web.Controllers
             return View();
         }
 
-        
+
         public ActionResult Create()
         {
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InsuranceProvidersSaveDto providersSaveDto)
@@ -60,7 +60,7 @@ namespace MedicalAppointment.Web.Controllers
             try
             {
                 var result = await _insuranceProviders.SaveAsync(providersSaveDto);
-                
+
                 if (result.IsSuccess)
                 {
                     return RedirectToAction(nameof(Index));
@@ -94,7 +94,7 @@ namespace MedicalAppointment.Web.Controllers
             return View();
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(InsuranceProvidersUpdateDto providersUpdateDto)
@@ -102,9 +102,9 @@ namespace MedicalAppointment.Web.Controllers
             try
             {
                 providersUpdateDto.UpdatedAt = DateTime.Now;
-               
+
                 var result = await _insuranceProviders.UpdateAsync(providersUpdateDto);
-                
+
 
                 if (result.IsSuccess)
                 {
@@ -116,9 +116,9 @@ namespace MedicalAppointment.Web.Controllers
                     ViewBag.Message = result.Message;
                     return View();
                 }
-                
 
-              
+
+
             }
             catch
             {
@@ -126,7 +126,7 @@ namespace MedicalAppointment.Web.Controllers
             }
         }
 
-     
-   
+
+
     }
 }

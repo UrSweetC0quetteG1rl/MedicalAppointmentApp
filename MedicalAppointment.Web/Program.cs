@@ -6,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 
+
+
 builder.Services.AddDbContext<MedicalAppointmentContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("AppointmentDb")));
 
 builder.Services.AddInsuranceDependencies();
 builder.Services.AddAppointmentDependencies();
+builder.Services.AddHttpClient();
 
 
 builder.Services.AddControllers();

@@ -1,13 +1,14 @@
 ﻿using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.InsuranceProviders;
+using MedicalAppointment.Persistance.Models.Insurnaces;
 using MedicalAppointment.Web.Models.Core;
 using MedicalAppointment.Web.Models.Insurances.InsurenceProviders;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MedicalAppointment.Web.Controllers
+namespace MedicalAppointment.Web.Controllers.InsuranceProviders
 {
     public class InsuranceProvidersAdmController : BaseApiController
     {
-        public InsuranceProvidersAdmController() : base("http://localhost:5138/api/")
+        public InsuranceProvidersAdmController(IHttpClientFactory httpClientFactory) : base(httpClientFactory)
         {
         }
 
@@ -15,12 +16,20 @@ namespace MedicalAppointment.Web.Controllers
         {
             try
             {
-                var model = await SendHttpRequestAsync<InsuranceGetAllModel>("InsuranceProviders/GetInsutanceProviders", HttpMethod.Get);
-                return View(model.Data);
+                var insuranceGetAllModel = await SendHttpRequestAsync<InsuranceGetAllModel>("InsuranceProviders/GetInsutanceProviders", HttpMethod.Get);
+
+                if (insuranceGetAllModel == null || insuranceGetAllModel.Data == null)
+                {
+                    ViewBag.Message = "No data available.";
+                    return View(new List<InsuranceProvidersNetworkModel>());
+                }
+
+                return View(insuranceGetAllModel.Data);
             }
             catch (Exception ex)
             {
-                return HandleError(ex);
+                ViewBag.Message = ex.Message;
+                return View(new List<InsuranceProvidersNetworkModel>());
             }
         }
 
@@ -33,7 +42,8 @@ namespace MedicalAppointment.Web.Controllers
             }
             catch (Exception ex)
             {
-                return HandleError(ex);
+                ViewBag.Message = $"Error: {ex.Message}";
+                return View("Error");
             }
         }
 
@@ -49,11 +59,7 @@ namespace MedicalAppointment.Web.Controllers
             try
             {
                 var response = await SendHttpRequestAsync<BaseApiModel>("InsuranceProviders/SavesInsurance", HttpMethod.Post, providersSaveDto);
-                if (!string.IsNullOrEmpty(response.Message))
-                {
-                    ViewBag.Message = response.Message;
-                    return View();
-                }
+
 
                 return RedirectToAction(nameof(Index));
             }
@@ -69,33 +75,23 @@ namespace MedicalAppointment.Web.Controllers
             try
             {
                 var model = await SendHttpRequestAsync<InsuranceProvidersGetByIDModel>($"InsuranceProviders/{id}", HttpMethod.Get);
-                return View(model.data);
+                return RedirectToAction(nameof(Index));
+
             }
             catch (Exception ex)
             {
-                return HandleError(ex);
+                ViewBag.Message = $"Error: {ex.Message}";
+                return View("Error");
             }
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]       
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(InsuranceProvidersUpdateDto insuranceProvidersUpdate)
         {
             try
             {
                 var response = await SendHttpRequestAsync<BaseApiModel>("InsuranceProviders/UpdateInsurance", HttpMethod.Post, insuranceProvidersUpdate);
-
-                if (response == null)
-                {
-                    ViewBag.Message = "La respuesta fue nula.";
-                    return View();
-                }
-
-                if (!string.IsNullOrEmpty(response.Message))
-                {
-                    ViewBag.Message = response.Message;
-                    return View();
-                }
 
                 return RedirectToAction(nameof(Index));
             }

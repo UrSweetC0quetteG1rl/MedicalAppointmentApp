@@ -1,44 +1,52 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using System.Net.Http;
 using System.Net.Http.Json;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
-namespace MedicalAppointment.Web.Controllers
+public abstract class BaseApiController : Controller
 {
-    public abstract class BaseApiController : Controller
-    {
-        private readonly string _baseUrl;
+    
+    protected readonly string BaseUrl = "http://localhost:5138/api/";
 
-        protected BaseApiController(string baseUrl)
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    protected BaseApiController(IHttpClientFactory httpClientFactory)
+    {
+        _httpClientFactory = httpClientFactory;
+    }
+
+   
+    protected async Task<T?> SendHttpRequestAsync<T>(string endpoint, HttpMethod method, object? data = null) where T : class
+    {
+        var client = _httpClientFactory.CreateClient();
+        client.BaseAddress = new Uri(BaseUrl); 
+
+        var request = new HttpRequestMessage(method, endpoint);
+
+        if (data != null)
         {
-            _baseUrl = baseUrl;
+            request.Content = JsonContent.Create(data);
         }
 
-        protected async Task<T> SendHttpRequestAsync<T>(string endpoint, HttpMethod method, object? data = null)
+        var response = await client.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
         {
-            using var client = new HttpClient { BaseAddress = new Uri(_baseUrl) };
-            var request = new HttpRequestMessage(method, endpoint);
+            string errorMessage = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Error: {response.StatusCode}, Details: {errorMessage}");
+        }
 
-            if (data != null)
-            {
-                request.Content = JsonContent.Create(data);
-            }
+        string responseContent = await response.Content.ReadAsStringAsync();
 
-            var response = await client.SendAsync(request);
+        
 
-            if (!response.IsSuccessStatusCode)
-            {
-                string errorMessage = await response.Content.ReadAsStringAsync();
-                throw new Exception($"Error: {response.StatusCode}, Details: {errorMessage}");
-            }
-
-            string responseContent = await response.Content.ReadAsStringAsync();
+        try
+        {
             return JsonConvert.DeserializeObject<T>(responseContent);
         }
-
-        protected IActionResult HandleError(Exception ex, string redirectAction = "Index")
+        catch (JsonException ex)
         {
-            ViewBag.Message = ex.Message;
-            return RedirectToAction(redirectAction);
+            throw new Exception("Error", ex);
         }
     }
 }

@@ -32,8 +32,18 @@ namespace MedicalAppointmentApp.Medical.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAppointment(int id)
+        {
+            var result = await _medicalAppointmentRepository.GetById(id);
 
-     
+            if (result == null)
+                return NotFound("No se encontraron datos");
+
+            return Ok(result);
+        }
+
+
 
         [HttpPost("SavesAppointment")]
         public async Task<IActionResult> Post([FromBody] AppointmentSaveDto appointmentSaveDto)

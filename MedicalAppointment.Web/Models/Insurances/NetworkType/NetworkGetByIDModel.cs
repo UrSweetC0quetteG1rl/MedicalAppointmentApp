@@ -4,7 +4,7 @@ namespace MedicalAppointment.Web.Models.Insurances.NetworkType
 {
     public class NetworkGetByIDModel
     {
-        public NetworkTypeModel data { get; set; }
+        public NetworkTypeModel? data { get; set; }
 
     }
 }

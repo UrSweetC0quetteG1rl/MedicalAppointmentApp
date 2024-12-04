@@ -5,6 +5,6 @@ namespace MedicalAppointment.Web.Models.Insurances.InsurenceProviders
 {
     public class InsuranceProvidersGetByIDModel : BaseApiModel
     {
-        public InsuranceProvidersNetworkModel data { get; set; }
+        public InsuranceProvidersNetworkModel? data { get; set; }
     }
 }
