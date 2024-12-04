@@ -1,8 +1,12 @@
-﻿using MedicalAppointment.Persistance.Models.Insurnaces;
+﻿using MedicalAppointment.Aplication.Dtos.Configuration.Insurnace.NetworkType;
+using MedicalAppointment.Persistance.Models.Insurnaces;
+using MedicalAppointment.Web.Models.Core;
 using MedicalAppointment.Web.Models.Insurances.NetworkType;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net.Http.Json;
+using System.Security.Policy;
 
 namespace MedicalAppointment.Web.Controllers
 {
@@ -79,11 +83,40 @@ namespace MedicalAppointment.Web.Controllers
         // POST: NetWorkAdmController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(NetworkSaveDto networkSave)
         {
+            BaseApiModel model = new BaseApiModel();
             try
             {
+                string url = "http://localhost:5138/api/";
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+
+                    var responseTask = await client.PostAsJsonAsync<NetworkSaveDto>("NetworkType/SavesNet", networkSave);
+
+                    if (responseTask.IsSuccessStatusCode)
+                    {
+                        string response = await responseTask.Content.ReadAsStringAsync();
+
+                        model = JsonConvert.DeserializeObject<BaseApiModel>(response);
+
+
+                    }
+                    else
+                    {
+                        string response = await responseTask.Content.ReadAsStringAsync();
+
+                        model = JsonConvert.DeserializeObject<BaseApiModel>(response);
+                        ViewBag.Message = model.Message;
+                        return View();
+
+                    }
+                }
                 return RedirectToAction(nameof(Index));
+
+
             }
             catch
             {
@@ -92,45 +125,78 @@ namespace MedicalAppointment.Web.Controllers
         }
 
         // GET: NetWorkAdmController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            return View();
+
+            NetworkGetByIDModel networkTypeIdModel = new NetworkGetByIDModel();
+
+            string url = "http://localhost:5138/api/";
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(url);
+
+                var responseTask = await client.GetAsync($"NetworkType/{id}");
+
+
+                if (responseTask.IsSuccessStatusCode)
+                {
+                    string response = await responseTask.Content.ReadAsStringAsync();
+
+                    networkTypeIdModel = JsonConvert.DeserializeObject<NetworkGetByIDModel>(response);
+
+
+                }
+
+            }
+            return View(networkTypeIdModel.data);
         }
 
         // POST: NetWorkAdmController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(NetworkUpdateDto networkUpdateDto )
         {
+            BaseApiModel model = new BaseApiModel();
             try
             {
+                string url = "http://localhost:5138/api/";
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+
+                    var responseTask = await client.PostAsJsonAsync<NetworkUpdateDto>("NetworkType/UpdateNetwork", networkUpdateDto);
+
+                    if (responseTask.IsSuccessStatusCode)
+                    {
+                        string response = await responseTask.Content.ReadAsStringAsync();
+
+                        model = JsonConvert.DeserializeObject<BaseApiModel>(response);
+
+
+                    }
+                    else
+                    {
+                        string response = await responseTask.Content.ReadAsStringAsync();
+
+                        model = JsonConvert.DeserializeObject<BaseApiModel>(response);
+                        ViewBag.Message = model.Message;
+                        return View();
+
+                    }
+                }
                 return RedirectToAction(nameof(Index));
+
+
             }
             catch
             {
                 return View();
             }
+
         }
 
-        // GET: NetWorkAdmController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
 
-        // POST: NetWorkAdmController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

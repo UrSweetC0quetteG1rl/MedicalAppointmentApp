@@ -3,7 +3,7 @@ using MedicalAppointment.Web.Models.Core;
 
 namespace MedicalAppointment.Web.Models.Insurances.InsurenceProviders
 {
-    public class InsuranceProvidersGetByIDModel : Base
+    public class InsuranceProvidersGetByIDModel : BaseApiModel
     {
         public InsuranceProvidersNetworkModel data { get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿namespace MedicalAppointment.Web.Models.Core
 {
-    public class Base
+    public class BaseApiModel
     {
         public bool IsSuccess { get; set; }
 

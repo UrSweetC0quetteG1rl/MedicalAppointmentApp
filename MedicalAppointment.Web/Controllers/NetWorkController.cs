@@ -100,12 +100,16 @@ namespace MedicalAppointment.Web.Controllers
 
                 if (result.IsSuccess)
                 {
+                    return RedirectToAction(nameof(Index));
+
+                }
+                else
+                {
                     ViewBag.Message = result.Message;
                     return View();
                 }
 
 
-                return RedirectToAction(nameof(Index));
 
             }
             catch

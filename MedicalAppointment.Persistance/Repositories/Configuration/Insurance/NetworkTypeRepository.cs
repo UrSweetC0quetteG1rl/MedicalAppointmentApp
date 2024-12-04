@@ -45,7 +45,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
             }
 
 
-            if (entity.Name == null)
+            if (string.IsNullOrEmpty(entity.Name))
             {
 
                 operationResult.Success = false;
@@ -53,7 +53,7 @@ namespace MedicalAppointment.Persistance.Repositories.Configuration.Insurance
                 return operationResult;
             }
 
-            if (entity.Description == null)
+            if (string.IsNullOrEmpty(entity.Description))
             {
                 operationResult.Success = false;
                 operationResult.Message = "Debe agregar una descripcion.";
