@@ -2,6 +2,7 @@
 using MedicalAppointment.Persistance.Models.Insurnaces;
 using MedicalAppointment.Web.Models.Core;
 using MedicalAppointment.Web.Models.Insurances.InsurenceProviders;
+using MedicalAppointment.Web.Models.Insurances.NetworkType;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedicalAppointment.Web.Controllers.InsuranceProviders
@@ -70,22 +71,19 @@ namespace MedicalAppointment.Web.Controllers.InsuranceProviders
             }
         }
 
-        public async Task<IActionResult> Edit(int id)
-        {
-            try
-            {
-                var model = await SendHttpRequestAsync<InsuranceProvidersGetByIDModel>($"InsuranceProviders/{id}", HttpMethod.Get);
-                return RedirectToAction(nameof(Index));
+		public async Task<IActionResult> Edit(int id)
+		{
+			var insuranceProvidersGetByID = await SendHttpRequestAsync<InsuranceProvidersGetByIDModel>($"InsuranceProviders/{id}", HttpMethod.Get);
 
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Message = $"Error: {ex.Message}";
-                return View("Error");
-            }
-        }
+			if (insuranceProvidersGetByID == null)
+			{
+				return NotFound();
+			}
 
-        [HttpPost]
+			return View(insuranceProvidersGetByID.data);
+		}
+
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(InsuranceProvidersUpdateDto insuranceProvidersUpdate)
         {

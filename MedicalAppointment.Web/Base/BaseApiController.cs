@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 public abstract class BaseApiController : Controller
 {
-    
+    // Define la URL base aquí
     protected readonly string BaseUrl = "http://localhost:5138/api/";
 
     private readonly IHttpClientFactory _httpClientFactory;
@@ -15,11 +15,11 @@ public abstract class BaseApiController : Controller
         _httpClientFactory = httpClientFactory;
     }
 
-   
+    // Método para enviar solicitudes HTTP
     protected async Task<T?> SendHttpRequestAsync<T>(string endpoint, HttpMethod method, object? data = null) where T : class
     {
         var client = _httpClientFactory.CreateClient();
-        client.BaseAddress = new Uri(BaseUrl); 
+        client.BaseAddress = new Uri(BaseUrl); // Usa la URL base
 
         var request = new HttpRequestMessage(method, endpoint);
 
@@ -46,7 +46,7 @@ public abstract class BaseApiController : Controller
         }
         catch (JsonException ex)
         {
-            throw new Exception("Error", ex);
+            throw new Exception("Error deserializing the response content.", ex);
         }
     }
 }
